@@ -73,22 +73,22 @@
               
                 <h1 class="text-[#0F172A] text-xl sm:text-2xl md:text-[32px] font-medium text-center">Sign in</h1>
 
-                <form action="api/login.php" method="POST" class="w-full flex flex-col gap-4 sm:gap-6">
+                <form id="loginForm" method="POST" class="w-full flex flex-col gap-4 sm:gap-6">
                   
                     <div class="flex flex-col gap-2 w-full">
-                        <label for="email" class="text-[#0F172A] text-sm sm:text-base font-medium">Email</label>
-                        <input type="email" name="email" id="email" required placeholder="user@mail.com" class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all">
+                        <label for="loginName" class="text-[#0F172A] text-sm sm:text-base font-medium">Email</label>
+                        <input type="email" name="loginName" id="loginName" required placeholder="user@mail.com" class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all">
                         </div>
 
                 
                     <div class="flex flex-col gap-2 w-full">
                         <div class="flex justify-between items-center">
-                            <label for="password" class="text-[#0F172A] text-sm sm:text-base font-medium">Password</label>
+                            <label for="loginPassword" class="text-[#0F172A] text-sm sm:text-base font-medium">Password</label>
                             <button type="button" class="text-slate-500 text-sm sm:text-base hover:text-[#0F172A] transition-colors">
                                 <span id="toggleText">Show</span>
                             </button>
                         </div>
-                        <input type="password" name="password" id="password" required placeholder="Enter your password"
+                        <input type="password" name="loginPassword" id="loginPpassword" required placeholder="Enter your password"
                             class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all">
                     </div>
                     
@@ -105,6 +105,13 @@
                         </a>
                     </div>
                 </form>
+
+            <script>
+            document.getElementById("loginForm").addEventListener("submit", function(e) {
+                e.preventDefault(); 
+                doLogin(); 
+            });
+    </script>
             </div>
         </div>
     </div>
