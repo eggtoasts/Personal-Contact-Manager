@@ -31,13 +31,13 @@ API Documentation: [ ]
 # 📊 System Architecture
 **Entity Relationship Diagram (ERD)**
 
-The database follows a relational model designed to maintain strict data isolation and integrity. The core architecture centers on a one-to-many relationship between the Users and Contacts tables. Each contact is owned by a single user and remains inaccessible to others.
+The database follows a relational model designed to maintain private contact lists, centering on a one-to-many relationship between the users and contacts tables. Each contact is owned by a single user and remains inaccessible to others.
 
 **Users Table**: Stores unique user credentials such as their full names, email address, and hashed passwords.
 
 **Contacts Table**: Stores names, phone numbers, emails, and the User ID foreign key.
 
-**Primary Keys**: Both tables contain auto-incrementing integers as primary keys (User ID and Contacts ID). This ensures that every record is uniquely identifiable and indexed for retrieval.
+**Primary Keys**: Both tables contain auto-incrementing integers as primary keys (User ID and Contacts ID), ensuring every record is uniquely identifiable and indexed for retrieval.
 
 **Foreign Key Constraint**: The contacts table includes a User ID Foreign Key, which maps each contact record back to its specific user. This constraint enforces referential integrity; a contact cannot exist without a valid associated user.
 
