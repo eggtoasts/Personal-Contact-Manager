@@ -13,7 +13,7 @@ API Documentation: [ ]
 
 **Server-Side Search**: Search API supporting partial name matches (no client-side caching).
 
-Asynchronous UI**: Fully AJAX-enabled web client for a "no-refresh" user experience.
+**Asynchronous UI**: Fully AJAX-enabled web client for a "no-refresh" user experience.
 
 **JSON Communication**: All data exchange between the client and the Linux/Apache server is handled via JSON.
 
