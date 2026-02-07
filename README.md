@@ -30,6 +30,7 @@ Documentation: SwaggerHub (API)
 
 # 📊 System Architecture
 Entity Relationship Diagram (ERD)
+
 The database is structured to ensure that contacts are strictly tied to a unique user ID, preventing any cross-user data leakage.
 
 ![Entity Relationship Diagram](erd.png)
