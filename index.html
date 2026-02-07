@@ -92,9 +92,7 @@
             Sign in
           </h1>
 
-          <form
-            action="api/login.php"
-            method="POST"
+          <form onsubmit="doLogin(); return false;"
             class="w-full flex flex-col gap-4 sm:gap-6"
           >
             <div class="flex flex-col gap-2 w-full">
@@ -103,10 +101,7 @@
                 class="text-[#0F172A] text-sm sm:text-base font-medium"
                 >Email</label
               >
-              <input
-                type="email"
-                name="email"
-                id="email"
+            <input type="email" id="loginName"
                 required
                 placeholder="user@mail.com"
                 class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
@@ -128,9 +123,7 @@
                 </button>
               </div>
               <input
-                type="password"
-                name="password"
-                id="password"
+               <input type="password" id="loginPassword"
                 required
                 placeholder="Enter your password"
                 class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
@@ -138,6 +131,7 @@
             </div>
 
             <div class="flex flex-col gap-3 sm:gap-4 items-center mt-1 sm:mt-2">
+              <span id="loginResult" class="text-red-600 text-sm font-bold"></span>
               <button
                 type="submit"
                 class="border-2 k w-full h-12 sm:h-14 lg:h-16 bg-black hover:from-[#4f46e5] hover:to-[#7c3aed] text-white font-medium text-lg sm:text-xl md:text-[22px] transition-all shadow-lg hover:shadow-xl"
@@ -155,5 +149,6 @@
         </div>
       </div>
     </div>
+    <script src="js/code.js"></script>
   </body>
 </html>

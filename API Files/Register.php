@@ -1,42 +1,43 @@
 <?php
+
+    require_once 'db.php';
     $inData = getRequestInfo();
 
     $firstName = $inData["firstname"];
     $lastName = $inData["lastName"];
     $username = $inData["login"];
-    $password = $inData["password"];
+    $password  = password_hash($inData["password"], PASSWORD_DEFAULT);
 
-    $conn = new mysqli();
-
-    if($conn->connect_error)
-    {
-        returnWithError( $conn->connect_error );
+   try {
+   
+        $stmt = $pdo->prepare("INSERT INTO user_tb (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
+        
+        if ($stmt->execute([$firstName, $lastName, $username, $password])) {
+            returnWithError(""); 
+        } else {
+            returnWithError("Registration Failed");
+        }
+    } catch (PDOException $e) {
+     
+        if ($e->getCode() == 23000) {
+            returnWithError("That email is already registered.");
+        } else {
+            returnWithError($e->getMessage());
+        }
     }
-    else
-    {
-        //Add user to User table
-        $stmt = $conn->prepare("INSERT INTO Users(firstname, lastname, login, password) VALUES(?,?,?,?)");
-        $stmt->bind_param("ss", $firstName, $lastName, $username, $password);
-        $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        returnWithError("");
-    }
 
-    function getRequestInfo()
-    {
+
+    function getRequestInfo() {
         return json_decode(file_get_contents('php://input'), true);
     }
 
-    function sendResultInfoAsJson( $obj )
-    {
+    function sendResultInfoAsJson($obj) {
         header('Content-type: application/json');
         echo $obj;
     }
 
-    function returnWithError( $err )
-    {
-        $retValue = '{"error":"' .$err .'"}';
-        sendResultInfoAsJson( $retValue );
+    function returnWithError($err) {
+        $retValue = json_encode(["error" => $err]);
+        sendResultInfoAsJson($retValue);
     }
 ?>

@@ -1,5 +1,5 @@
 // change below when we have a domain set up
-const urlBase = "http://COP4331-5.com/LAMPAPI";
+const urlBase = "http://localhost/Personal-Contact-Manager/API Files"; // changing this to my local path for testing...
 const extension = "php";
 
 let userId = 0;
