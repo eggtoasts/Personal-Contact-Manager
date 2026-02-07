@@ -6,7 +6,7 @@
     $firstName = "";
     $lastName = "";
 
-    //$conn = new mysqli(); 	
+    $conn = new mysqli("localhost", "Admin", "March16", "smallproject_db"); 	
 
     if($conn->connect_error)
     {
@@ -15,7 +15,7 @@
     else
     {
         //query User table for a match
-        $stmt = $conn->prepare("SELECT ID, firstname, lastName FROM Users WHERE Login=? AND Password=?");
+        $stmt = $conn->prepare("SELECT ID, first_name, last_name FROM Users WHERE login=? AND password=?");
         $stmt->bind_param("ss", $inData["login"], $inData["password"]);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -23,7 +23,7 @@
         //Returns user info if match is found from table
         if($row = $result->fetch_assoc() )
         {
-            //returnWithInfo($row[], $row[], $row[]);
+            returnWithInfo($row["login"], $row["password"], $row["ID"]);
         } 
         else{
 			returnWithError("No Records Found");
@@ -33,7 +33,7 @@
         $conn->close();
     }
 
-    functionGetRequestInfo()
+    function getRequestInfo()
     {
         return json_decode(file_get_contents('php://input'), true);
     }
