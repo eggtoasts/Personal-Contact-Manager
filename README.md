@@ -1,4 +1,4 @@
-# Personal Contact Manager 
+# 📱 Personal Contact Manager 
 A secure, web-based contact management system built on the LAMP stack. This application allows users to maintain private contact lists with real-time, server-side search capabilities.
 
 # 🚀 Live Demo
