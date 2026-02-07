@@ -5,7 +5,7 @@ A secure, web-based contact management system built on the LAMP stack. This appl
 URL: [ ] 
 API Documentation: [ ]
 
-📌 Key Features
+# 📌 Key Features
 Secure Authentication: User registration and login system to ensure private data access.
 
 Contact CRUD: Create, read, update, and delete contacts within a personalized, responsive dashboard.
@@ -16,7 +16,7 @@ Asynchronous UI: Fully AJAX-enabled web client for a "no-refresh" user experienc
 
 JSON Communication: All data exchange between the client and the Linux/Apache server is handled via JSON.
 
-🛠️ Technology Stack
+# 🛠️ Technology Stack
 Frontend: HTML5, Tailwind CSS, JavaScript (AJAX/Fetch API)
 
 Backend: PHP (REST-style API)
@@ -27,7 +27,7 @@ Server/Hosting: Linux/Apache hosted on [ ]
 
 Documentation: SwaggerHub (API)
 
-📊 System Architecture
+# 📊 System Architecture
 Entity Relationship Diagram (ERD)
 The database is structured to ensure that contacts are strictly tied to a unique user ID, preventing any cross-user data leakage.
 
@@ -38,7 +38,7 @@ Users Table: Stores unique user credentials and hashed passwords.
 
 Contacts Table: Stores names, phone numbers, emails, and the UserID foreign key.
 
-👥 Team Members & Roles
+# 👥 Team Members & Roles
 [Aiman Hakim]: [Designed and implemented Tailwind CSS interfaces for registration and login forms to ensure a responsive UI and layout. Developed the PHP backend and MySQL schema using prepared statements for secure user authentication. Authored SwaggerHub documentation to standardize API endpoints and integrated AJAX workflows to enable asynchronous JSON communication between the client and server.]
 
 [ ]: []
