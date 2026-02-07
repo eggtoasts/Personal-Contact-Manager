@@ -1,9 +1,8 @@
+
 .env
 
 
 *.sql
 
 
-.DS_Store
-Thumbs.db
-
+*.csv
