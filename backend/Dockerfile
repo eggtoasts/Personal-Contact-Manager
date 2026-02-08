@@ -26,21 +26,23 @@ RUN a2enmod rewrite headers
 # Create the Site Config with robust CORS support
 RUN echo '<VirtualHost *:${PORT}>\n\
     DocumentRoot /var/www/html\n\
+    \n\
+    # Global CORS settings\n\
+    Header always set Access-Control-Allow-Origin "https://sonic-contact-manager.up.railway.app"\n\
+    Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"\n\
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"\n\
+\n\
     <Directory "/var/www/html">\n\
         AllowOverride All\n\
         Require all granted\n\
-        \n\
-        # --- CORS LOGIC START ---\n\
-        Header set Access-Control-Allow-Origin "https://sonic-contact-manager.up.railway.app"\n\
-        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"\n\
-        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"\n\
-        \n\
-        # Handle the OPTIONS preflight request immediately\n\
+\n\
         RewriteEngine On\n\
+\n\
+        # 1. Handle Preflight (OPTIONS) requests at the Apache level\n\
         RewriteCond %{REQUEST_METHOD} OPTIONS\n\
         RewriteRule ^(.*)$ $1 [R=200,L]\n\
-        # --- CORS LOGIC END ---\n\
 \n\
+        # 2. Map clean URLs to PHP files\n\
         RewriteCond %{REQUEST_FILENAME} !-f\n\
         RewriteRule ^Login$ Login.php [L]\n\
         RewriteRule ^Register$ Register.php [L]\n\
