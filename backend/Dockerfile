@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.2-apache
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,39 +15,27 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd zip pdo pdo_mysql
 
-# Disable ALL MPM modules first to avoid conflicts
-RUN a2dismod mpm_event || true
-RUN a2dismod mpm_worker || true
-RUN a2dismod mpm_prefork || true
-
-# Remove any existing MPM module symlinks
-RUN rm -f /etc/apache2/mods-enabled/mpm_*
-
-# Enable only prefork MPM
-RUN a2enmod mpm_prefork
-
-# Enable rewrite module
-RUN a2enmod rewrite
-
 # Use production PHP configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Configure Apache for Railway dynamic ports
-RUN sed -i 's/Listen 80/Listen ${PORT:-80}/' /etc/apache2/ports.conf
-RUN sed -i 's/:80/:${PORT:-80}/' /etc/apache2/sites-available/000-default.conf
+# Set working directory
+WORKDIR /var/www/html
 
 # Copy application files
-COPY --chown=www-data:www-data ./ /var/www/html/
+COPY . /var/www/html/
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 755 /var/www/html
+# Create a non-root user
+RUN groupadd -g 1000 www && \
+    useradd -u 1000 -ms /bin/bash -g www www
 
-# Switch to non-privileged user
-USER www-data
+# Change ownership of the working directory
+RUN chown -R www:www /var/www/html
 
-# Expose port
-EXPOSE 80
+# Switch to non-root user
+USER www
 
-# Start Apache in foreground
-CMD ["apache2-foreground"]
+# Expose the port (Railway will set PORT environment variable)
+EXPOSE 8000
+
+# Start PHP built-in server
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8000}"]
