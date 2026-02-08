@@ -5,16 +5,16 @@
     require_once 'dp.php';
     $inData = getRequestInfo();
 
-    $firstName = $inData["firstname"];
+    $firstName = $inData["firstName"];
     $lastName = $inData["lastName"];
     $email = $inData["email"];
     $phone = $inData["phone"];
-    $created = $inData["created"];
     $userId = $inData["userId"];
 
     $stmt = $pdo->prepare("INSERT INTO contacts_tb (first_name, last_name, email, phone, user_id) VALUES (?, ?, ?, ?, ?)) ");
-
-    if($stmt->is_execute([$firstName, $lastName, $email, $phone, $user_id])) {
+    $stmt->bind_param("ssssi", $firstName, $lastName, $email, $phone, $userId);
+    
+    if($stmt->excute()) {
         returnWithError("");
     } else {
         returnWithError("Add Contact Failed");
