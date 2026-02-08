@@ -1,4 +1,6 @@
 <?php
+require_once 'middleware.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -81,6 +83,31 @@ $apiInfo = [
             'description' => 'Database connection test'
         ],
         [
+            'path' => '/logs',
+            'method' => 'GET',
+            'description' => 'View request logs (add ?lines=100 for more logs)'
+        ],
+        [
+            'path' => '/logs?action=clear',
+            'method' => 'GET',
+            'description' => 'Clear request logs'
+        ],
+        [
+            'path' => '/swagger',
+            'method' => 'GET',
+            'description' => 'Interactive API documentation (Swagger UI)'
+        ],
+        [
+            'path' => '/docs',
+            'method' => 'GET',
+            'description' => 'API documentation (alias for /swagger)'
+        ],
+        [
+            'path' => '/swagger.json',
+            'method' => 'GET',
+            'description' => 'OpenAPI specification in JSON format'
+        ],
+        [
             'path' => '/health',
             'method' => 'GET',
             'description' => 'Health check endpoint'
@@ -90,9 +117,12 @@ $apiInfo = [
         'All API endpoints (except test endpoints) require POST requests with JSON data',
         'Content-Type header must be set to application/json',
         'CORS is enabled for all origins',
-        'All endpoints return JSON responses'
+        'All endpoints return JSON responses',
+        'Interactive API documentation available at /swagger or /docs',
+        'OpenAPI specification available at /swagger.json'
     ]
 ];
 
+logResponse(200, json_encode($apiInfo));
 echo json_encode($apiInfo, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 ?>

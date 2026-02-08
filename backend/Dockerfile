@@ -27,7 +27,10 @@ COPY . /var/www/html/
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+    && chmod -R 755 /var/www/html \
+    && touch /var/www/html/requests.log \
+    && chown www-data:www-data /var/www/html/requests.log \
+    && chmod 666 /var/www/html/requests.log
 
 # Create basic nginx configuration that allows direct .php access
 RUN echo 'server {' > /etc/nginx/sites-available/default \
