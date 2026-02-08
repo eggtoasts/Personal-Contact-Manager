@@ -1,5 +1,4 @@
-# Multi-stage build for PHP-FPM + Nginx
-FROM php:8.2-fpm as php
+FROM php:8.2-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -8,8 +7,6 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    nginx \
-    supervisor \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -19,7 +16,59 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Use production PHP configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Create application directory
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
+# Configure Apache for Railway (dynamic port support)
+RUN sed -i 's/Listen 80/Listen ${PORT:-80}/' /etc/apache2/ports.conf
+RUN sed -i 's/:80/:${PORT:-80}/' /etc/apache2/sites-available/000-default.conf
+
+# Configure Apache logging for Railway (stdout/stderr)
+RUN sed -i 's|ErrorLog .*|ErrorLog /proc/self/fd/2|' /etc/apache2/apache2.conf \
+    && sed -i 's|CustomLog .*|CustomLog /proc/self/fd/1 combined|' /etc/apache2/sites-available/000-default.conf
+
+# Create Apache configuration with CORS and clean URLs
+RUN cat > /etc/apache2/conf-available/api.conf << 'EOF'
+# CORS Headers for API
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# Handle preflight OPTIONS requests
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Clean URL rewrites for API endpoints
+RewriteRule ^api/?$ api_info.php [L]
+RewriteRule ^info/?$ api_info.php [L]
+RewriteRule ^swagger/?$ swagger.php [L]
+RewriteRule ^docs/?$ swagger.php [L]
+RewriteRule ^swagger\.json$ swagger_json.php [L]
+RewriteRule ^logs/?$ logs.php [L]
+RewriteRule ^db/?$ db_test.php [L]
+RewriteRule ^test-logs/?$ log_test.php [L]
+
+# API endpoint rewrites
+RewriteRule ^Login/?$ Login.php [L]
+RewriteRule ^Register/?$ Register.php [L]
+RewriteRule ^getContacts/?$ getContacts.php [L]
+RewriteRule ^addContact/?$ addContact.php [L]
+RewriteRule ^updateContact/?$ updateContact.php [L]
+RewriteRule ^deleteContact/?$ deleteContact.php [L]
+RewriteRule ^editContact/?$ editContact.php [L]
+RewriteRule ^searchContacts/?$ searchContacts.php [L]
+
+# Health check endpoint
+RewriteRule ^health/?$ - [E=no_log:1]
+RewriteCond %{REQUEST_URI} ^/health/?$
+RewriteRule . - [R=200,L,E=response:healthy]
+EOF
+
+# Enable the API configuration
+RUN a2enconf api
+
+# Set working directory
 WORKDIR /var/www/html
 
 # Copy application files
@@ -32,116 +81,44 @@ RUN chown -R www-data:www-data /var/www/html \
     && chown www-data:www-data /var/www/html/requests.log \
     && chmod 666 /var/www/html/requests.log
 
-# Create basic nginx configuration that allows direct .php access
-RUN echo 'server {' > /etc/nginx/sites-available/default \
-    && echo '    listen 80;' >> /etc/nginx/sites-available/default \
-    && echo '    root /var/www/html;' >> /etc/nginx/sites-available/default \
-    && echo '    index index.php;' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # CORS headers' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Origin "*" always;' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # Handle OPTIONS requests' >> /etc/nginx/sites-available/default \
-    && echo '    if ($request_method = OPTIONS) {' >> /etc/nginx/sites-available/default \
-    && echo '        return 200;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # Handle PHP files' >> /etc/nginx/sites-available/default \
-    && echo '    location ~ \.php$ {' >> /etc/nginx/sites-available/default \
-    && echo '        try_files $uri =404;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_pass 127.0.0.1:9000;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_index index.php;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/sites-available/default \
-    && echo '        include fastcgi_params;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '}' >> /etc/nginx/sites-available/default
+# Configure PHP error logging for Railway
+RUN echo "log_errors = On" >> /usr/local/etc/php/php.ini \
+    && echo "error_log = /proc/self/fd/2" >> /usr/local/etc/php/php.ini \
+    && echo "display_errors = Off" >> /usr/local/etc/php/php.ini
 
-# Create supervisor configuration with stdout/stderr logging for Railway
-RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'nodaemon=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'silent=false' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '[program:nginx]' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'command=nginx -g "daemon off;"' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'priority=10' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '[program:php-fpm]' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'command=php-fpm --nodaemonize' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'priority=5' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf
-
-# Configure nginx to output logs to stdout/stderr for Railway
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Configure PHP-FPM to output logs to stderr for Railway
-RUN echo '[global]' > /usr/local/etc/php-fpm.d/railway.conf \
-    && echo 'error_log = /proc/self/fd/2' >> /usr/local/etc/php-fpm.d/railway.conf \
-    && echo 'log_level = notice' >> /usr/local/etc/php-fpm.d/railway.conf \
-    && echo '' >> /usr/local/etc/php-fpm.d/railway.conf \
-    && echo '[www]' >> /usr/local/etc/php-fpm.d/railway.conf \
-    && echo 'access.log = /proc/self/fd/2' >> /usr/local/etc/php-fpm.d/railway.conf \
-    && echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.d/railway.conf \
-    && echo 'decorate_workers_output = no' >> /usr/local/etc/php-fpm.d/railway.conf
-
-# Create startup script inline
-RUN cat > /start.sh << 'EOF'
+# Create startup script for Railway
+RUN cat > /usr/local/bin/start-apache << 'EOF'
 #!/bin/bash
 
-echo "Starting PHP-FPM + Nginx with Supervisor for Railway..."
+echo "Starting Apache for Railway..."
 
-# Update nginx port for Railway if PORT environment variable is set
+# Update port configuration if PORT is set
 if [ ! -z "$PORT" ]; then
     echo "Railway PORT detected: $PORT"
-    sed -i "s/listen 80;/listen $PORT;/" /etc/nginx/sites-available/default
-else
-    echo "Using default port 80"
+    sed -i "s/Listen \${PORT:-80}/Listen $PORT/" /etc/apache2/ports.conf
+    sed -i "s/:\${PORT:-80}/:$PORT/" /etc/apache2/sites-available/000-default.conf
 fi
 
+# Set proper environment for Apache
+export APACHE_RUN_USER=www-data
+export APACHE_RUN_GROUP=www-data
+export APACHE_PID_FILE=/var/run/apache2/apache2.pid
+export APACHE_RUN_DIR=/var/run/apache2
+export APACHE_LOCK_DIR=/var/lock/apache2
+export APACHE_LOG_DIR=/var/log/apache2
+
 # Create necessary directories
-mkdir -p /var/log/nginx
-mkdir -p /var/run/nginx
-mkdir -p /var/log/supervisor
+mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
 
-# Ensure nginx log symlinks are correct for Railway
-ln -sf /dev/stdout /var/log/nginx/access.log
-ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Set proper permissions
-chown -R www-data:www-data /var/www/html
-chmod -R 755 /var/www/html
-
-# Enable PHP error logging to stderr for Railway
-echo "log_errors = On" >> /usr/local/etc/php/php.ini
-echo "error_log = /proc/self/fd/2" >> /usr/local/etc/php/php.ini
-
-# Start supervisor which will manage both PHP-FPM and Nginx
-echo "Starting Supervisor to manage PHP-FPM and Nginx..."
-echo "All logs will be output to stdout/stderr for Railway visibility"
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# Start Apache in foreground
+echo "Apache starting on port ${PORT:-80}"
+exec apache2 -DFOREGROUND
 EOF
 
-RUN chmod +x /start.sh
+RUN chmod +x /usr/local/bin/start-apache
 
-# Router is no longer needed since nginx handles routing directly
-
-# Expose port 80 (Railway will override with PORT env var)
+# Expose port (Railway will override this)
 EXPOSE 80
 
-# Start both services
-CMD ["/start.sh"]
+# Start Apache
+CMD ["/usr/local/bin/start-apache"]
