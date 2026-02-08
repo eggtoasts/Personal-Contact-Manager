@@ -12,7 +12,7 @@ $charset = 'utf8mb4';
 
 // Railway provides individual components, so build DSN from them
 $dsn = getenv('DB_CONNECTION') ?: $_ENV['DB_CONNECTION'] ?: '';
-
+echo $dsn;
 if (empty($dsn)) {
     // Build DSN from individual components (Railway style)
     $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
