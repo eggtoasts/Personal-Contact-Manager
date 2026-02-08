@@ -73,8 +73,8 @@ function doLogin() {
 
             saveCookie();
 
-            console.log("Redirecting to color.html...");
-            window.location.href = "./color.html";
+            console.log("Redirecting to dashboard.html...");
+            window.location.href = "./dashboard.html";
           } catch (parseErr) {
             console.error("JSON parse error:", parseErr);
             document.getElementById("loginResult").innerHTML =
