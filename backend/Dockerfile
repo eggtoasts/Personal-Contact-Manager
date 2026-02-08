@@ -29,38 +29,8 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Create nginx configuration
-RUN echo 'server {' > /etc/nginx/sites-available/default \
-    && echo '    listen 80;' >> /etc/nginx/sites-available/default \
-    && echo '    root /var/www/html;' >> /etc/nginx/sites-available/default \
-    && echo '    index index.php;' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # CORS headers' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Origin "*" always;' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With" always;' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # Handle OPTIONS requests' >> /etc/nginx/sites-available/default \
-    && echo '    if ($request_method = OPTIONS) {' >> /etc/nginx/sites-available/default \
-    && echo '        return 200;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # API routing' >> /etc/nginx/sites-available/default \
-    && echo '    location / {' >> /etc/nginx/sites-available/default \
-    && echo '        try_files $uri $uri/ @api;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    location @api {' >> /etc/nginx/sites-available/default \
-    && echo '        rewrite ^/(.*)$ /router.php last;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    location ~ \.php$ {' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_pass 127.0.0.1:9000;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_index index.php;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/sites-available/default \
-    && echo '        include fastcgi_params;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '}' >> /etc/nginx/sites-available/default
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/sites-available/default
 
 # Create supervisor configuration
 RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
@@ -112,37 +82,7 @@ EOF
 
 RUN chmod +x /start.sh
 
-# Create simple router.php
-RUN echo '<?php' > /var/www/html/router.php \
-    && echo 'header("Content-Type: application/json");' >> /var/www/html/router.php \
-    && echo 'header("Access-Control-Allow-Origin: *");' >> /var/www/html/router.php \
-    && echo 'header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");' >> /var/www/html/router.php \
-    && echo 'header("Access-Control-Allow-Headers: Content-Type, Authorization");' >> /var/www/html/router.php \
-    && echo '' >> /var/www/html/router.php \
-    && echo 'if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {' >> /var/www/html/router.php \
-    && echo '    http_response_code(200);' >> /var/www/html/router.php \
-    && echo '    exit();' >> /var/www/html/router.php \
-    && echo '}' >> /var/www/html/router.php \
-    && echo '' >> /var/www/html/router.php \
-    && echo '$path = trim($_SERVER["REQUEST_URI"], "/");' >> /var/www/html/router.php \
-    && echo '$routes = [' >> /var/www/html/router.php \
-    && echo '    "Login" => "Login.php",' >> /var/www/html/router.php \
-    && echo '    "Register" => "Register.php",' >> /var/www/html/router.php \
-    && echo '    "addContact" => "addContact.php",' >> /var/www/html/router.php \
-    && echo '    "getContacts" => "getContacts.php",' >> /var/www/html/router.php \
-    && echo '    "updateContact" => "updateContact.php",' >> /var/www/html/router.php \
-    && echo '    "deleteContact" => "deleteContact.php",' >> /var/www/html/router.php \
-    && echo '    "editContact" => "editContact.php",' >> /var/www/html/router.php \
-    && echo '    "searchContacts" => "searchContacts.php"' >> /var/www/html/router.php \
-    && echo '];' >> /var/www/html/router.php \
-    && echo '' >> /var/www/html/router.php \
-    && echo 'if (isset($routes[$path]) && file_exists($routes[$path])) {' >> /var/www/html/router.php \
-    && echo '    require $routes[$path];' >> /var/www/html/router.php \
-    && echo '} else {' >> /var/www/html/router.php \
-    && echo '    http_response_code(404);' >> /var/www/html/router.php \
-    && echo '    echo json_encode(["error" => "Endpoint not found"]);' >> /var/www/html/router.php \
-    && echo '}' >> /var/www/html/router.php \
-    && echo '?>' >> /var/www/html/router.php
+# Router is no longer needed since nginx handles routing directly
 
 # Expose port 80 (Railway will override with PORT env var)
 EXPOSE 80
