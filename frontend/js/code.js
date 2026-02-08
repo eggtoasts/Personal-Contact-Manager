@@ -8,12 +8,17 @@ let firstName = "";
 let lastName = "";
 
 function Register(){
-  
+
 //Get informatin user entered into Register.html
   firstName = document.getElementById("firstName").value;
   lastName = document.getElementById("lastName").value;
   let login = document.getElementById("loginName").value;
   let password = document.getElementById("loginPassword").value;
+
+  console.log("User info:" , 
+    firstName, " ",
+    lastName, " ",
+    login);
 
   let tmp = {
     firstName: firstName,
