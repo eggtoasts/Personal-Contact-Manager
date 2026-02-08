@@ -11,14 +11,20 @@ function loadEnv($path) {
 }
 
 // Load the file
-loadEnv(__DIR__ . '/.env');
-$host = $_ENV['DB_HOST'];
-$db   = $_ENV['DB_NAME'];
-$user = $_ENV['DB_USER'];
-$pass = $_ENV['DB_PASS'];
-$charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+
+loadEnv(__DIR__ . '/.env');
+$dsn = $_ENV['DB_CONNECTION'] ?? null;
+if ($dsn == null) {  
+    $host = $_ENV['DB_HOST'];
+    $db   = $_ENV['DB_NAME'];
+    $user = $_ENV['DB_USER'];
+    $pass = $_ENV['DB_PASS'];
+    $charset = 'utf8mb4';
+    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";;
+    return;
+}
+
 
 
 $options = [
