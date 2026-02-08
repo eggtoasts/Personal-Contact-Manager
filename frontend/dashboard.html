@@ -157,6 +157,10 @@
       />
 
       <button
+        onclick="
+          event.preventDefault();
+          doLogout();
+        "
         class="text-white font-medium bg-black/20 hover:bg-white/10 px-4 py-1.5 rounded-lg transition-all border border-white/20 text-sm"
       >
         Log out
@@ -214,7 +218,10 @@
         </div>
       </div>
 
-      <div class="p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        id="contacts"
+        class="p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         <div
           class="flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all"
         >

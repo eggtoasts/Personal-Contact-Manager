@@ -163,6 +163,26 @@ function doLogin() {
   }
 }
 
+function addContact() {}
+
+function editContact() {}
+
+function deleteContact() {}
+
+function getContacts() {
+  const contactsContainer = document.getElementById("contacts");
+
+  //clear container first
+
+  const child = contactId.lastElementChild;
+  while (child) {
+    contactsContainer.removeChild(child);
+    child = child.lastElementChild;
+  }
+
+  //then, add the contacts we fetch
+}
+
 function saveCookie() {
   let minutes = 20;
   let date = new Date();
