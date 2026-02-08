@@ -1,35 +1,27 @@
-# Use nginx to serve static files
-FROM nginx:alpine
+# 1. Use PHP + Apache base image
+FROM php:8.2-apache
 
-# Remove default nginx website
-RUN rm -rf /usr/share/nginx/html/*
+# 2. Enable Apache rewrite module (important for routing)
+RUN a2enmod rewrite
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 3. Install PHP extensions for database connectivity
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Copy all frontend files to nginx html directory
-COPY . /usr/share/nginx/html/
+# 4. Copy your repo files into the Apache web root
+COPY . /var/www/html/
 
-# Create startup script to handle Railway's dynamic port
-RUN cat > /docker-entrypoint.d/40-update-port.sh << 'EOF'
-#!/bin/sh
-# Update nginx port for Railway if PORT environment variable is set
-if [ ! -z "$PORT" ]; then
-    echo "Railway PORT detected: $PORT"
-    sed -i "s/listen 80;/listen $PORT;/" /etc/nginx/conf.d/default.conf
-else
-    echo "Using default port 80"
-fi
-EOF
+# 5. Set ownership so Apache (www-data) can access the files
+RUN chown -R www-data:www-data /var/www/html
 
-RUN chmod +x /docker-entrypoint.d/40-update-port.sh
+# 6. Create a startup script to handle Railway's dynamic port
+# This script finds the default port 80 and replaces it with the $PORT variable
+RUN echo '#!/bin/sh \n\
+sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf \n\
+sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/g" /etc/apache2/sites-available/000-default.conf \n\
+exec apache2-foreground' > /usr/local/bin/railway-entrypoint.sh
 
-# Set proper permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# 7. Make the script executable
+RUN chmod +x /usr/local/bin/railway-entrypoint.sh
 
-# Expose port 80 (Railway will override with PORT env var)
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# 8. Tell Docker to run our script on startup
+ENTRYPOINT ["/usr/local/bin/railway-entrypoint.sh"]
