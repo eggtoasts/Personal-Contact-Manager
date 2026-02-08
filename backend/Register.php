@@ -3,7 +3,7 @@
     require_once 'db.php';
     $inData = getRequestInfo();
 
-    $firstName = $inData["firstname"];
+    $firstName = $inData["firstName"];
     $lastName = $inData["lastName"];
     $username = $inData["login"];
     $password  = password_hash($inData["password"], PASSWORD_DEFAULT);
