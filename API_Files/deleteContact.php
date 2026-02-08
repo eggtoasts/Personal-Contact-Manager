@@ -1,20 +1,14 @@
-<<<<<<< HEAD:API_Files/deleteContact.php
 <?php
-
-=======
-<?php
-
     //Delete contact from contact table
 
     require_once 'dp.php';
+    
     $inData = getRequestInfo();
 
-    $userId = $inData["userId"];
-    $email = $inData["email"];
+    $stmt = $pdo->prepare("DELETE FROM contacts_tb WHERE contacts_id = ?")
+    $stmt->bind_param("s", $inData["contactId"] )
 
-    $stmt = $pdo->prepare("DELETE FROM contacts_tb WHERE user_id = ? AND email = ?")
-
-    if($stmt->execute([$userId, $email])) {
+    if($stmt->execute()) {
         returnWithError("");
     } else {
         returnWithError("Delete Contact Failed");
@@ -33,5 +27,4 @@
         $retValue = json_encode(["error" => $err]);
         sendResultInfoAsJson($retValue);
     }
->>>>>>> 0a0617f4050d25a402970325b6db7badd142f678:API Files/deleteContact.php
 ?>
