@@ -1,5 +1,6 @@
 // change below when we have a domain set up
-const urlBase = "https://personal-contact-manager-production.up.railway.app"; // Replace with your actual Railway backend URL
+const urlBase = "https://contactmanagerfork-production.up.railway.app/"; // Replace with your actual Railway backend URL
+const frontendBase = window.location.origin; // Gets current frontend URL automatically
 const extension = "";
 
 let userId = 0;
@@ -28,37 +29,66 @@ function doLogin() {
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   try {
     xhr.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        let jsonObject = JSON.parse(xhr.responseText);
-        userId = jsonObject.id;
+      console.log("XHR State:", this.readyState, "Status:", this.status);
 
-        if (userId < 1) {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          try {
+            console.log("Response received:", xhr.responseText);
+            let jsonObject = JSON.parse(xhr.responseText);
+            console.log("Parsed response:", jsonObject);
+
+            userId = jsonObject.id;
+
+            if (userId < 1) {
+              document.getElementById("loginResult").innerHTML =
+                "User/Password combination incorrect";
+              return;
+            }
+
+            firstName = jsonObject.firstName;
+            lastName = jsonObject.lastName;
+
+            console.log(
+              "Login successful, user:",
+              firstName,
+              lastName,
+              "ID:",
+              userId,
+            );
+
+            // Save user data to localStorage for color.html page
+            const userData = {
+              id: userId,
+              firstName: firstName,
+              lastName: lastName,
+              success: jsonObject.success,
+              timestamp: jsonObject.timestamp,
+            };
+            localStorage.setItem("userData", JSON.stringify(userData));
+            localStorage.setItem("loginTime", new Date().toISOString());
+
+            console.log("User data saved to localStorage");
+
+            saveCookie();
+
+            console.log("Redirecting to color.html...");
+            window.location.href = "./color.html";
+          } catch (parseErr) {
+            console.error("JSON parse error:", parseErr);
+            document.getElementById("loginResult").innerHTML =
+              "Invalid response from server";
+          }
+        } else {
+          console.error("HTTP Error:", this.status, xhr.responseText);
           document.getElementById("loginResult").innerHTML =
-            "User/Password combination incorrect";
-          return;
+            "Login failed. Please try again.";
         }
-
-        firstName = jsonObject.firstName;
-        lastName = jsonObject.lastName;
-
-        // Save user data to localStorage for color.html page
-        const userData = {
-          id: userId,
-          firstName: firstName,
-          lastName: lastName,
-          success: jsonObject.success,
-          timestamp: jsonObject.timestamp,
-        };
-        localStorage.setItem("userData", JSON.stringify(userData));
-        localStorage.setItem("loginTime", new Date().toISOString());
-
-        saveCookie();
-
-        window.location.href = "color.html";
       }
     };
     xhr.send(jsonPayload);
   } catch (err) {
+    console.error("XHR Error:", err);
     document.getElementById("loginResult").innerHTML = err.message;
   }
 }
