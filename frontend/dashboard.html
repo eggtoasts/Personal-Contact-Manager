@@ -17,12 +17,41 @@
     />
 
     <style>
+      .shadow-style {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .shadow-style::after {
+        content: "";
+        position: absolute;
+        bottom: 0px;
+        left: 20px;
+
+        width: 200px;
+        height: 200px;
+        background-image: url("sonicgoat.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom right;
+        opacity: 0.2;
+        pointer-events: none;
+        z-index: -2;
+        mix-blend-mode: luminosity;
+        background-blend-mode: add;
+      }
+
+      .shadow-style > div {
+        position: relative;
+        z-index: 1;
+      }
+
       .sonic-header-style {
         background-image:
           linear-gradient(
             to bottom,
             rgba(0, 37, 97, 0.9),
-            rgba(7, 79, 187, 0.9)
+            rgba(0, 77, 193, 0.9)
           ),
           url("overlay_map.png");
         background-size: cover;
@@ -106,6 +135,13 @@
           font-size: 1.25rem;
         }
       }
+
+      .header-style {
+        --bg-color-2: #00317a;
+        --bg-color-1: #0060f0;
+
+        background: linear-gradient(var(--bg-color-1), var(--bg-color-2));
+      }
     </style>
   </head>
   <body
@@ -116,7 +152,7 @@
     >
       <img
         src="./sonic_logo.png"
-        class="h-9 object-contain mr-auto"
+        class="h-11 object-contain mr-auto"
         alt="Sonic Logo"
       />
 
@@ -126,7 +162,30 @@
         Log out
       </button>
     </header>
-    <h1>dashboard stuff :3</h1>
+
+    <div
+      class="shadow-style bg-white rounded-2xl w-3/4 border border-[#C5D8FE]"
+    >
+      <div
+        class="shadow-style p-2 header-style flex items-center justify-center rounded-tl-lg rounded-tr-lg"
+      >
+        <h1 class="text-white font-bold text-2xl">Contacts</h1>
+
+        <input
+          type="text"
+          placeholder="Enter a contact.."
+          class="p-1 rounded-2xl ml-auto"
+        />
+
+        <button class="ml-5 text-white p-2 bg-[#135BEC] rounded-2xl font-bold">
+          <p>+ Add Contact</p>
+        </button>
+      </div>
+
+      <div class="p-2">
+        <h1>bruh</h1>
+      </div>
+    </div>
   </body>
   <script src="js/code.js"></script>
 </html>
