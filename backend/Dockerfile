@@ -20,14 +20,27 @@ COPY . /var/www/html/
 # 6. Configure Apache for Railway
 # This setup replaces the complex "cat" command with a simpler echo approach
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+# Ensure headers module is enabled
+RUN a2enmod rewrite headers
 
-# 7. Create the Site Config
+# Create the Site Config with robust CORS support
 RUN echo '<VirtualHost *:${PORT}>\n\
     DocumentRoot /var/www/html\n\
     <Directory "/var/www/html">\n\
         AllowOverride All\n\
         Require all granted\n\
+        \n\
+        # --- CORS LOGIC START ---\n\
+        Header set Access-Control-Allow-Origin "https://sonic-contact-manager.up.railway.app"\n\
+        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"\n\
+        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"\n\
+        \n\
+        # Handle the OPTIONS preflight request immediately\n\
         RewriteEngine On\n\
+        RewriteCond %{REQUEST_METHOD} OPTIONS\n\
+        RewriteRule ^(.*)$ $1 [R=200,L]\n\
+        # --- CORS LOGIC END ---\n\
+\n\
         RewriteCond %{REQUEST_FILENAME} !-f\n\
         RewriteRule ^Login$ Login.php [L]\n\
         RewriteRule ^Register$ Register.php [L]\n\
@@ -38,7 +51,6 @@ RUN echo '<VirtualHost *:${PORT}>\n\
         RewriteRule ^searchContacts$ searchContacts.php [L]\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
-
 # 8. Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
