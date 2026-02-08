@@ -1,5 +1,6 @@
 <?php
 
+
 // Get database configuration from container environment variables
 // Railway injects these directly into the container
 $host = getenv('DB_HOST') ?: $_ENV['DB_HOST'] ?: 'localhost';
@@ -9,13 +10,17 @@ $pass = getenv('DB_PASS') ?: $_ENV['DB_PASS'] ?: '';
 $port = getenv('DB_PORT') ?: $_ENV['DB_PORT'] ?: '3306';
 $charset = 'utf8mb4';
 
-// Check if we have a full connection string (Railway style)
-$dsn = getenv('DB_CONNECTION') ?: $_ENV['DB_CONNECTION'] ?: null;
+// Railway provides individual components, so build DSN from them
+$dsn = getenv('DB_CONNECTION') ?: $_ENV['DB_CONNECTION'] ?: '';
 
-if ($dsn === null) {
-    // Build DSN from individual components
+if (empty($dsn)) {
+    // Build DSN from individual components (Railway style)
     $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
+    error_log("Built DSN from components: host=$host, port=$port, db=$db, user=$user");
+} else {
+    error_log("Using provided DSN connection string");
 }
+error_log("Database DSN: mysql:host=$host;port=$port;dbname=$db (user=$user)");
 
 // PDO options for better error handling and security
 $options = [
