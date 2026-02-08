@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-    <head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Success - Contact Manager</title>
@@ -15,9 +15,91 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
       rel="stylesheet"
     />
-    </head>
-    <body>
-        <h1>Dashboard</h1>
-    </body>
-    <script src="js/code.js"></script>
+
+    <style>
+      body {
+        font-family: "Inter", "Poppins", sans-serif;
+        background-color: #f5f2e9;
+      }
+
+      .test {
+        --bg-color-1: #f1f7ff;
+        --bg-color-2: #e4eeff;
+        --size: 30px;
+        --half-size: 15px;
+
+        background-color: var(--bg-color-1);
+        background-image:
+          linear-gradient(
+            45deg,
+            var(--bg-color-2) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--bg-color-2) 75%,
+            var(--bg-color-2)
+          ),
+          linear-gradient(
+            45deg,
+            var(--bg-color-2) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--bg-color-2) 75%,
+            var(--bg-color-2)
+          );
+
+        background-size: var(--size) var(--size);
+        background-position:
+          0 0,
+          var(--half-size) var(--half-size);
+        background-attachment: fixed;
+      }
+
+      @media (max-height: 600px) {
+        .compact-height {
+          max-height: 100vh;
+          overflow: visible;
+        }
+      }
+
+      @media (orientation: portrait) and (min-height: 700px) {
+        .portrait-logo {
+          width: 8rem !important;
+          height: 8rem !important;
+        }
+      }
+
+      @media (min-width: 900px) and (min-height: 1000px) {
+        .login-container {
+          max-width: 560px;
+          gap: 3rem;
+        }
+
+        .portrait-logo {
+          width: 10rem !important;
+          height: 10rem !important;
+        }
+
+        h1 {
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
+        }
+
+        form {
+          gap: 2rem;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+          height: 4.5rem;
+          font-size: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="test min-h-screen w-full flex items-center justify-center p-3 sm:p-4"
+  >
+    <h1>Dashboard</h1>
+  </body>
+  <script src="js/code.js"></script>
 </html>
