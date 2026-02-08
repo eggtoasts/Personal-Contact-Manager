@@ -44,7 +44,14 @@ RUN chown -R www-data:www-data /var/www/html
 
 # 9. Startup Script
 RUN echo '#!/bin/sh\n\
+# Force disable conflicting MPMs and enable prefork\n\
+a2dismod mpm_event mpm_worker || true\n\
+a2enmod mpm_prefork || true\n\
+\n\
+# Update port for Railway\n\
 sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf\n\
+\n\
+# Start Apache\n\
 exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
 # Railway default port
