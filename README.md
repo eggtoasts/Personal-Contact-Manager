@@ -4,7 +4,7 @@ A secure, web-based contact management system built on the LAMP stack. This appl
 # 🚀 Live Demo
 URL: https://sonic-contact-manager.up.railway.app/
 
-API Documentation: [ ]
+API Documentation: https://app.swaggerhub.com/apis/ucf-ed8/contact-manager-api/1.0.0
 
 # 📌 Key Features
 **Secure Authentication**: User registration and login system to ensure private data access.
