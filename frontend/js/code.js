@@ -8,26 +8,27 @@ let firstName = "";
 let lastName = "";
 
 function doLogin() {
-  userId = 0;
-  firstName = "";
-  lastName = "";
-
-  let login = document.getElementById("email").value;
-  let password = document.getElementById("loginPassword").value;
-  //	var hash = md5( password );
-
-  document.getElementById("loginResult").innerHTML = "";
-
-  let tmp = { login: login, password: password };
-  //	var tmp = {login:login,password:hash};
-  let jsonPayload = JSON.stringify(tmp);
-
-  let url = urlBase + "/Login";
-
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", url, true);
-  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   try {
+    userId = 0;
+    firstName = "";
+    lastName = "";
+
+    let login = document.getElementById("loginName").value;
+    let password = document.getElementById("loginPassword").value;
+    //	var hash = md5( password );
+
+    document.getElementById("loginResult").innerHTML = "";
+
+    let tmp = { login: login, password: password };
+    //	var tmp = {login:login,password:hash};
+    let jsonPayload = JSON.stringify(tmp);
+
+    let url = urlBase + "/Login";
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
     xhr.onreadystatechange = function () {
       console.log("XHR State:", this.readyState, "Status:", this.status);
 
@@ -88,8 +89,9 @@ function doLogin() {
     };
     xhr.send(jsonPayload);
   } catch (err) {
-    console.error("XHR Error:", err);
-    document.getElementById("loginResult").innerHTML = err.message;
+    console.error("Login function error:", err);
+    document.getElementById("loginResult").innerHTML =
+      "Login error: " + err.message;
   }
 }
 
