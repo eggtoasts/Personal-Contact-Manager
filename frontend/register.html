@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign In</title>
+    <title>Sign Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
@@ -33,11 +33,11 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom right;
-        opacity: 0.1;
+        opacity: 0.05;
         pointer-events: none;
         z-index: 0;
 
-        background-color: rgb(255, 194, 62);
+        background-color: rgb(255, 255, 255);
         background-blend-mode: multiply;
       }
 
@@ -52,8 +52,8 @@
       }
 
       .test {
-        --bg-color-1: #054bb3;
-        --bg-color-2: #0e54be;
+        --bg-color-1: #f1f7ff;
+        --bg-color-2: #e4eeff;
         --size: 30px;
         --half-size: 15px;
 
@@ -85,8 +85,8 @@
 
       .shadow-style {
         box-shadow:
-          inset 6px 4px 0px 0px #ffe385,
-          inset -3px -3px 0px 2px #4d3300;
+          inset 6px 4px 0px 0px #e5e5e5,
+          inset -3px -3px 0px 2px #c5d8fe;
       }
 
       @media (max-height: 600px) {
@@ -134,24 +134,31 @@
   <body
     class="test min-h-screen w-full flex items-center justify-center p-3 sm:p-4"
   >
-    <div class="w-full max-w-[640px] gap-4 flex flex-col items-center">
+    <div class="w-full max-w-[640px] gap-0 flex flex-col items-center">
       <div class="portrait-logo h-28 shrink-0">
         <img
-          src="./sonic_logo.png"
+          src="./cast.gif"
           alt="Profile logo"
           class="block w-full h-full object-cover"
         />
       </div>
 
       <div
-        class="shadow-style w-full border-4 rounded-2xl sm:rounded-3xl border border-[#424242] bg-[#FFC400] backdrop-blur-md px-4 py-5 sm:px-6 sm:py-8 md:px-14 md:py-10"
+        class="shadow-style w-full border-4 rounded-2xl sm:rounded-3xl border border-[#002561] bg-[#FBFCFE] backdrop-blur-md px-4 py-5 sm:px-6 sm:py-8 md:px-14 md:py-10"
       >
         <div class="flex flex-col gap-5 sm:gap-8 md:gap-12 items-center">
-          <h1
-            class="text-[#0F172A] text-xl sm:text-2xl md:text-[32px] font-bold text-center"
-          >
-            Sign in
-          </h1>
+          <div class="flex flex-col gap-1">
+            <h1
+              class="text-[#2144A7] font-bold text-xl sm:text-2xl md:text-[32px] text-center"
+            >
+              Sign Up
+            </h1>
+
+            <h2 class="text-center text-[#106EB2]">
+              Existing user?
+              <span class="font-bold cursor-pointer">Sign In</span>
+            </h2>
+          </div>
 
           <form
             onsubmit="
@@ -163,7 +170,34 @@
             <div class="flex flex-col gap-2 w-full">
               <label
                 for="email"
-                class="text-[#0F172A] text-sm sm:text-base font-medium"
+                class="text-[#2144A7] text-sm sm:text-base font-medium"
+                >First Name</label
+              >
+              <input
+                type="text"
+                id="firstName"
+                required
+                class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#A8B3D1] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
+              />
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+              <label
+                for="email"
+                class="text-[#2144A7] text-sm sm:text-base font-medium"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                id="lastName"
+                required
+                class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#A8B3D1] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
+              />
+            </div>
+
+            <div class="flex flex-col gap-2 w-full">
+              <label
+                for="email"
+                class="text-[#2144A7] text-sm sm:text-base font-medium"
                 >Email</label
               >
               <input
@@ -171,7 +205,7 @@
                 id="loginName"
                 required
                 placeholder="user@mail.com"
-                class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
+                class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#A8B3D1] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
               />
             </div>
 
@@ -179,7 +213,7 @@
               <div class="flex justify-between items-center">
                 <label
                   for="password"
-                  class="text-[#0F172A] text-sm sm:text-base font-medium"
+                  class="text-[#2144A7] text-sm sm:text-base font-medium"
                   >Password</label
                 >
                 <button
@@ -195,7 +229,7 @@
                 id="loginPassword"
                 required
                 placeholder="Enter your password"
-                class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
+                class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#A8B3D1] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
               />
             </div>
 
@@ -208,14 +242,8 @@
                 type="submit"
                 class="rounded-2xl border-2 k w-full h-12 sm:h-14 lg:h-16 bg-[#054bb3] text-white font-medium text-lg sm:text-xl md:text-[22px] transition-all"
               >
-                Log in
+                Sign Up
               </button>
-              <a
-                href="/register"
-                class="rounded-2xl text-[#054bb3] border-2 w-full h-12 sm:h-14 lg:h-16 border border-[#111] bg-white text-[#111] text-base sm:text-lg md:text-xl flex items-center justify-center hover:bg-gray-50 transition-colors"
-              >
-                Create an account
-              </a>
             </div>
           </form>
         </div>
