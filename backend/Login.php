@@ -111,9 +111,9 @@ try {
 
     error_log("[LOGIN] User found in database: " . $user['first_name'] . " " . $user['last_name']);
 
-    // Verify password
+    // Verify password (plain text comparison)
     error_log("[LOGIN] Verifying password for user: " . $email);
-    if (!password_verify($password, $user["password"])) {
+    if ($password !== $user["password"]) {
         error_log("[LOGIN] ERROR: Password verification failed for email: " . $email);
         returnWithError("Invalid email or password.", 401);
         exit();
