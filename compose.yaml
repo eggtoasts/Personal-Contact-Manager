@@ -1,49 +1,162 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
+# Docker Compose configuration for Contact Manager application
+# Includes backend API, frontend, MySQL database, and database management UI
 
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
+version: "3.8"
+
 services:
-  server:
+  # Backend API Service (PHP + Nginx)
+  backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
+    container_name: contact_manager_backend
+    restart: unless-stopped
     ports:
-      - 9000:80
+      - "8000:80"
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=contact_manager
+      - DB_USER=root
+      - DB_PASS=contact_manager_password_2024
+      - DB_CONNECTION=mysql:host=mysql;dbname=contact_manager;charset=utf8mb4
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - contact_manager_network
+    volumes:
+      - ./backend:/var/www/html
+      - backend_logs:/var/log
 
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker-compose up`.
-#     depends_on:
-#       db:
-#         condition: service_healthy
-#   db:
-#     image: postgres
-#     restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
-#     volumes:
-#       - db-data:/var/lib/postgresql/data
-#     environment:
-#       - POSTGRES_DB=example
-#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-# volumes:
-#   db-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
+  # Frontend Service (Static files with Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: contact_manager_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - API_URL=http://localhost:8000
+    networks:
+      - contact_manager_network
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
 
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: contact_manager_mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: contact_manager_password_2024
+      MYSQL_DATABASE: contact_manager
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_user_password_2024
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./contact_manager_db.sql:/docker-entrypoint-initdb.d/contact_manager_db.sql:ro
+      - mysql_config:/etc/mysql/conf.d
+    networks:
+      - contact_manager_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-pcontact_manager_password_2024",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # phpMyAdmin - Database Management UI
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: contact_manager_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: contact_manager_password_2024
+      MYSQL_ROOT_PASSWORD: contact_manager_password_2024
+      PMA_ABSOLUTE_URI: http://localhost:8080/
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - contact_manager_network
+
+  # Adminer - Alternative lightweight database UI
+  adminer:
+    image: adminer:4.8.1
+    container_name: contact_manager_adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - contact_manager_network
+
+# Named volumes for persistent data
+volumes:
+  mysql_data:
+    driver: local
+    name: contact_manager_mysql_data
+  mysql_config:
+    driver: local
+    name: contact_manager_mysql_config
+  backend_logs:
+    driver: local
+    name: contact_manager_backend_logs
+
+# Custom network for service communication
+networks:
+  contact_manager_network:
+    driver: bridge
+    name: contact_manager_network
+
+# Development override - uncomment for development mode
+# To use: docker-compose -f compose.yaml -f compose.dev.yaml up
+#
+# Additional services for development can be added here:
+#
+# services:
+#   # Redis for caching (optional)
+#   redis:
+#     image: redis:7-alpine
+#     container_name: contact_manager_redis
+#     restart: unless-stopped
+#     ports:
+#       - "6379:6379"
+#     networks:
+#       - contact_manager_network
+#
+#   # Mailhog for email testing (optional)
+#   mailhog:
+#     image: mailhog/mailhog:v1.0.1
+#     container_name: contact_manager_mailhog
+#     restart: unless-stopped
+#     ports:
+#       - "1025:1025" # SMTP
+#       - "8025:8025" # Web UI
+#     networks:
+#       - contact_manager_network

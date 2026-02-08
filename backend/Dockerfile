@@ -58,31 +58,52 @@ RUN echo 'server {' > /etc/nginx/sites-available/default \
     && echo '    }' >> /etc/nginx/sites-available/default \
     && echo '}' >> /etc/nginx/sites-available/default
 
-# Create supervisor configuration
+# Create supervisor configuration with stdout/stderr logging for Railway
 RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
     && echo 'nodaemon=true' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'silent=false' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo '[program:nginx]' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'command=nginx -g "daemon off;"' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'priority=10' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile=/var/log/nginx.log' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile=/var/log/nginx.log' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo '[program:php-fpm]' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'command=php-fpm' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'command=php-fpm --nodaemonize' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'priority=5' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile=/var/log/php-fpm.log' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile=/var/log/php-fpm.log' >> /etc/supervisor/conf.d/supervisord.conf
+    && echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf
+
+# Configure nginx to output logs to stdout/stderr for Railway
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Configure PHP-FPM to output logs to stderr for Railway
+RUN echo '[global]' > /usr/local/etc/php-fpm.d/railway.conf \
+    && echo 'error_log = /proc/self/fd/2' >> /usr/local/etc/php-fpm.d/railway.conf \
+    && echo 'log_level = notice' >> /usr/local/etc/php-fpm.d/railway.conf \
+    && echo '' >> /usr/local/etc/php-fpm.d/railway.conf \
+    && echo '[www]' >> /usr/local/etc/php-fpm.d/railway.conf \
+    && echo 'access.log = /proc/self/fd/2' >> /usr/local/etc/php-fpm.d/railway.conf \
+    && echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.d/railway.conf \
+    && echo 'decorate_workers_output = no' >> /usr/local/etc/php-fpm.d/railway.conf
 
 # Create startup script inline
 RUN cat > /start.sh << 'EOF'
 #!/bin/bash
 
-echo "Starting PHP-FPM + Nginx with Supervisor..."
+echo "Starting PHP-FPM + Nginx with Supervisor for Railway..."
 
 # Update nginx port for Railway if PORT environment variable is set
 if [ ! -z "$PORT" ]; then
@@ -97,12 +118,21 @@ mkdir -p /var/log/nginx
 mkdir -p /var/run/nginx
 mkdir -p /var/log/supervisor
 
+# Ensure nginx log symlinks are correct for Railway
+ln -sf /dev/stdout /var/log/nginx/access.log
+ln -sf /dev/stderr /var/log/nginx/error.log
+
 # Set proper permissions
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 
+# Enable PHP error logging to stderr for Railway
+echo "log_errors = On" >> /usr/local/etc/php/php.ini
+echo "error_log = /proc/self/fd/2" >> /usr/local/etc/php/php.ini
+
 # Start supervisor which will manage both PHP-FPM and Nginx
 echo "Starting Supervisor to manage PHP-FPM and Nginx..."
+echo "All logs will be output to stdout/stderr for Railway visibility"
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 EOF
 
