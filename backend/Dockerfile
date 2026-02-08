@@ -44,6 +44,13 @@ FROM php:8.2.12-apache
 # https://github.com/docker-library/docs/tree/master/php#configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
+# Fix Apache MPM conflict - disable event and worker MPMs, enable prefork MPM
+RUN a2dismod mpm_event mpm_worker || true
+RUN a2enmod mpm_prefork
+
+# # Debug: Show which MPM modules are enabled (optional - remove in production)
+# RUN apache2ctl -M | grep mpm || echo "No MPM modules found"
+
 # Copy app files from the app directory.
 COPY ./ /var/www/html
 
