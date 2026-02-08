@@ -29,8 +29,31 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/sites-available/default
+# Create basic nginx configuration that allows direct .php access
+RUN echo 'server {' > /etc/nginx/sites-available/default \
+    && echo '    listen 80;' >> /etc/nginx/sites-available/default \
+    && echo '    root /var/www/html;' >> /etc/nginx/sites-available/default \
+    && echo '    index index.php;' >> /etc/nginx/sites-available/default \
+    && echo '' >> /etc/nginx/sites-available/default \
+    && echo '    # CORS headers' >> /etc/nginx/sites-available/default \
+    && echo '    add_header Access-Control-Allow-Origin "*" always;' >> /etc/nginx/sites-available/default \
+    && echo '    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;' >> /etc/nginx/sites-available/default \
+    && echo '    add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;' >> /etc/nginx/sites-available/default \
+    && echo '' >> /etc/nginx/sites-available/default \
+    && echo '    # Handle OPTIONS requests' >> /etc/nginx/sites-available/default \
+    && echo '    if ($request_method = OPTIONS) {' >> /etc/nginx/sites-available/default \
+    && echo '        return 200;' >> /etc/nginx/sites-available/default \
+    && echo '    }' >> /etc/nginx/sites-available/default \
+    && echo '' >> /etc/nginx/sites-available/default \
+    && echo '    # Handle PHP files' >> /etc/nginx/sites-available/default \
+    && echo '    location ~ \.php$ {' >> /etc/nginx/sites-available/default \
+    && echo '        try_files $uri =404;' >> /etc/nginx/sites-available/default \
+    && echo '        fastcgi_pass 127.0.0.1:9000;' >> /etc/nginx/sites-available/default \
+    && echo '        fastcgi_index index.php;' >> /etc/nginx/sites-available/default \
+    && echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/sites-available/default \
+    && echo '        include fastcgi_params;' >> /etc/nginx/sites-available/default \
+    && echo '    }' >> /etc/nginx/sites-available/default \
+    && echo '}' >> /etc/nginx/sites-available/default
 
 # Create supervisor configuration
 RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
