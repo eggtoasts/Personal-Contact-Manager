@@ -1,43 +1,52 @@
 <?php
 
-function loadEnv($path) {
-    if (!file_exists($path)) return;
-    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        list($name, $value) = explode('=', $line, 2);
-        $_ENV[trim($name)] = trim($value);
-    }
+// Get database configuration from container environment variables
+// Railway injects these directly into the container
+$host = getenv('DB_HOST') ?: $_ENV['DB_HOST'] ?: 'localhost';
+$db = getenv('DB_NAME') ?: $_ENV['DB_NAME'] ?: 'contact_manager';
+$user = getenv('DB_USER') ?: $_ENV['DB_USER'] ?: 'root';
+$pass = getenv('DB_PASS') ?: $_ENV['DB_PASS'] ?: '';
+$port = getenv('DB_PORT') ?: $_ENV['DB_PORT'] ?: '3306';
+$charset = 'utf8mb4';
+
+// Check if we have a full connection string (Railway style)
+$dsn = getenv('DB_CONNECTION') ?: $_ENV['DB_CONNECTION'] ?: null;
+
+if ($dsn === null) {
+    // Build DSN from individual components
+    $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 }
 
-// Load the file
-
-
-loadEnv(__DIR__ . '/.env');
-$dsn = $_ENV['DB_CONNECTION'] ?? null;
-if ($dsn == null) {  
-    $host = $_ENV['DB_HOST'];
-    $db   = $_ENV['DB_NAME'];
-    $user = $_ENV['DB_USER'];
-    $pass = $_ENV['DB_PASS'];
-    $charset = 'utf8mb4';
-    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";;
-    return;
-}
-
-
-
+// PDO options for better error handling and security
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,      
-    PDO::ATTR_EMULATE_PREPARES   => false,                
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+    PDO::ATTR_PERSISTENT         => false,
+    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
 ];
 
 try {
+    // Create PDO connection
+    $pdo = new PDO($dsn, $user, $pass, $options);
 
-     $pdo = new PDO($dsn, $user, $pass, $options);
+    // Log successful connection (for Railway visibility)
+    error_log("Database connection successful: $host:$port/$db");
+
 } catch (\PDOException $e) {
-    
-     die("Database Connection Failed: " . $e->getMessage());
+    // Log detailed error for Railway debugging
+    error_log("Database Connection Failed: " . $e->getMessage());
+    error_log("Connection details: host=$host, port=$port, db=$db, user=$user");
+
+    // Don't expose sensitive details in the die message
+    die("Database Connection Failed: Unable to connect to database server");
+}
+
+// Optional: Test connection with a simple query
+try {
+    $pdo->query("SELECT 1");
+} catch (\PDOException $e) {
+    error_log("Database connection test failed: " . $e->getMessage());
+    die("Database Connection Failed: Connection established but database is not accessible");
 }
 ?>

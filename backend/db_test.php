@@ -9,35 +9,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-function loadEnv($path) {
-    if (!file_exists($path)) return;
-    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        if (strpos($line, '=') === false) continue;
-        list($name, $value) = explode('=', $line, 2);
-        $_ENV[trim($name)] = trim($value);
-    }
-}
-
 try {
-    // Load environment variables
-    loadEnv(__DIR__ . '/.env');
+    // Get database configuration from container environment variables
+    // Railway injects these directly into the container
+    $host = getenv('DB_HOST') ?: $_ENV['DB_HOST'] ?: 'localhost';
+    $db = getenv('DB_NAME') ?: $_ENV['DB_NAME'] ?: 'contact_manager';
+    $user = getenv('DB_USER') ?: $_ENV['DB_USER'] ?: 'root';
+    $pass = getenv('DB_PASS') ?: $_ENV['DB_PASS'] ?: '';
+    $port = getenv('DB_PORT') ?: $_ENV['DB_PORT'] ?: '3306';
+    $charset = 'utf8mb4';
 
-    // Get database configuration
-    $dsn = $_ENV['DB_CONNECTION'] ?? null;
+    // Check if we have a full connection string (Railway style)
+    $dsn = getenv('DB_CONNECTION') ?: $_ENV['DB_CONNECTION'] ?: null;
 
-    if ($dsn == null) {
-        $host = $_ENV['DB_HOST'] ?? 'localhost';
-        $db = $_ENV['DB_NAME'] ?? 'contact_manager';
-        $user = $_ENV['DB_USER'] ?? 'root';
-        $pass = $_ENV['DB_PASS'] ?? '';
-        $charset = 'utf8mb4';
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-    } else {
-        // Use the provided DSN
-        $user = $_ENV['DB_USER'] ?? '';
-        $pass = $_ENV['DB_PASS'] ?? '';
+    if ($dsn === null) {
+        // Build DSN from individual components
+        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
     }
 
     $options = [
@@ -68,11 +55,12 @@ try {
         'message' => 'Database connection failed',
         'error' => $e->getMessage(),
         'env_check' => [
-            'DB_HOST' => $_ENV['DB_HOST'] ?? 'not set',
-            'DB_NAME' => $_ENV['DB_NAME'] ?? 'not set',
-            'DB_USER' => $_ENV['DB_USER'] ?? 'not set',
-            'DB_PASS' => isset($_ENV['DB_PASS']) ? 'set' : 'not set',
-            'DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'not set'
+            'DB_HOST' => getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? 'not set'),
+            'DB_NAME' => getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? 'not set'),
+            'DB_USER' => getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? 'not set'),
+            'DB_PORT' => getenv('DB_PORT') ?: ($_ENV['DB_PORT'] ?? 'not set'),
+            'DB_PASS' => (getenv('DB_PASS') || isset($_ENV['DB_PASS'])) ? 'set' : 'not set',
+            'DB_CONNECTION' => getenv('DB_CONNECTION') ?: ($_ENV['DB_CONNECTION'] ?? 'not set')
         ]
     ]);
 } catch (Exception $e) {
