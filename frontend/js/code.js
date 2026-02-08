@@ -1,5 +1,5 @@
 // change below when we have a domain set up
-const urlBase = "https://contactmanagerfork-production.up.railway.app/"; // Replace with your actual Railway backend URL
+const urlBase = "https://personal-contact-manager-production.up.railway.app"; // Replace with your actual Railway backend URL
 const frontendBase = window.location.origin; // Gets current frontend URL automatically
 const extension = "";
 
