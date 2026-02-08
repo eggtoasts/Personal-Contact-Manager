@@ -50,7 +50,7 @@ The database follows a relational model designed to maintain private contact lis
 # 👥 Team Members & Roles
 **Amy Hakim**: Designed and implemented Tailwind CSS interfaces for registration and login forms to ensure a responsive UI and layout. Developed the PHP backend and MySQL schema using prepared statements for secure user authentication. Authored SwaggerHub documentation to standardize API endpoints and integrated AJAX workflows to enable asynchronous JSON communication between the client and server.
 
-[ ]: []
+[S ]: []
 
 [ ]: []
 
