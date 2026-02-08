@@ -1,5 +1,5 @@
 // change below when we have a domain set up
-const urlBase = "https://your-backend-app.up.railway.app"; // Replace with your actual Railway backend URL
+const urlBase = "https://personal-contact-manager-production.up.railway.app"; // Replace with your actual Railway backend URL
 const extension = "";
 
 let userId = 0;
