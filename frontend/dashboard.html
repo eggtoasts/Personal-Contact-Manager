@@ -17,6 +17,18 @@
     />
 
     <style>
+      .sonic-header-style {
+        background-image:
+          linear-gradient(
+            to bottom,
+            rgba(0, 37, 97, 0.9),
+            rgba(7, 79, 187, 0.9)
+          ),
+          url("overlay_map.png");
+        background-size: cover;
+        background-position: center;
+        background-blend-mode: add;
+      }
       body {
         font-family: "Inter", "Poppins", sans-serif;
         background-color: #f5f2e9;
@@ -97,9 +109,24 @@
     </style>
   </head>
   <body
-    class="test min-h-screen w-full flex items-center justify-center p-3 sm:p-4"
+    class="test min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-4"
   >
-    <h1>Dashboard</h1>
+    <header
+      class="sonic-header-style fixed top-0 left-0 w-full h-[55px] flex items-center px-4 z-50 shadow-lg border-b border-[#054bb3]/30"
+    >
+      <img
+        src="./sonic_logo.png"
+        class="h-9 object-contain mr-auto"
+        alt="Sonic Logo"
+      />
+
+      <button
+        class="text-white font-medium bg-black/20 hover:bg-white/10 px-4 py-1.5 rounded-lg transition-all border border-white/20 text-sm"
+      >
+        Log out
+      </button>
+    </header>
+    <h1>dashboard stuff :3</h1>
   </body>
   <script src="js/code.js"></script>
 </html>
