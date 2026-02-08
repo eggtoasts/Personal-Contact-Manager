@@ -70,7 +70,7 @@ try {
 
     // Prepare and execute database query
     $stmt = $pdo->prepare("SELECT user_id, first_name, last_name, password FROM user_tb WHERE email = ?");
-
+    echo $stmt;
     if (!$stmt) {
         returnWithError("Database query preparation failed.", 500);
         exit();
