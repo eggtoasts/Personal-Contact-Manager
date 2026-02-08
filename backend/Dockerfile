@@ -38,4 +38,4 @@ USER www
 EXPOSE 8000
 
 # Start PHP built-in server with router
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-9000} index.php"]
+CMD ["sh", "-c", "cd /var/www/html && php -S 0.0.0.0:${PORT:-9000} router.php"]

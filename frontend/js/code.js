@@ -1,6 +1,6 @@
 // change below when we have a domain set up
-const urlBase = "http://localhost/Personal-Contact-Manager/API Files"; // changing this to my local path for testing...
-const extension = "php";
+const urlBase = "https://your-backend-app.up.railway.app"; // Replace with your actual Railway backend URL
+const extension = "";
 
 let userId = 0;
 let firstName = "";
@@ -21,7 +21,7 @@ function doLogin() {
   //	var tmp = {login:login,password:hash};
   let jsonPayload = JSON.stringify(tmp);
 
-  let url = urlBase + "/Login." + extension;
+  let url = urlBase + "/Login";
 
   let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);

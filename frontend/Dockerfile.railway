@@ -1,0 +1,146 @@
+# Multi-stage build for Railway deployment
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files (create them if they don't exist)
+COPY package*.json ./
+RUN npm install --only=production || echo "No package.json found, using static approach"
+
+# Copy all source files
+COPY . .
+
+# Create environment configuration script
+RUN echo '#!/bin/sh' > /app/configure-env.sh && \
+    echo 'API_URL=${API_URL:-"http://localhost:8000"}' >> /app/configure-env.sh && \
+    echo 'sed -i "s|const urlBase = \".*\"|const urlBase = \"$API_URL\"|g" /usr/share/nginx/html/js/code.js' >> /app/configure-env.sh && \
+    chmod +x /app/configure-env.sh
+
+# Production stage
+FROM nginx:alpine
+
+# Install gettext for envsubst
+RUN apk add --no-cache gettext
+
+# Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy static files
+COPY --from=builder /app /usr/share/nginx/html/
+
+# Copy environment configuration script
+COPY --from=builder /app/configure-env.sh /docker-entrypoint.d/40-configure-env.sh
+
+# Create Railway-compatible nginx configuration
+RUN cat > /etc/nginx/templates/default.conf.template << 'EOF'
+server {
+    listen ${PORT:-80};
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Enable gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types
+        text/plain
+        text/css
+        text/xml
+        text/javascript
+        application/javascript
+        application/xml+rss
+        application/json;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Handle SPA routing
+    location / {
+        try_files $uri $uri/ /index.html;
+
+        # CORS headers for API calls
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization" always;
+    }
+
+    # Cache static assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, no-transform, immutable";
+
+        # CORS for fonts and assets
+        add_header Access-Control-Allow-Origin "*" always;
+    }
+
+    # Handle API proxy if needed (optional)
+    location /api/ {
+        proxy_pass ${API_URL:-http://backend:8000}/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+}
+EOF
+
+# Create startup script that configures environment variables
+RUN cat > /docker-entrypoint.d/30-envsubst-on-templates.sh << 'EOF'
+#!/bin/sh
+
+set -e
+
+ME=$(basename $0)
+
+auto_envsubst() {
+  local template_dir="${NGINX_ENVSUBST_TEMPLATE_DIR:-/etc/nginx/templates}"
+  local suffix="${NGINX_ENVSUBST_TEMPLATE_SUFFIX:-.template}"
+  local output_dir="${NGINX_ENVSUBST_OUTPUT_DIR:-/etc/nginx/conf.d}"
+  local filter="${NGINX_ENVSUBST_FILTER:-}"
+
+  local template defined_envs relative_path output_path subdir
+  defined_envs=$(printf '${%s} ' $(awk "END { for (name in ENVIRON) { print ( name ~ /${filter}/ ) ? name : \"\" } }" < /dev/null ))
+  [ -d "$template_dir" ] || return 0
+  if [ ! -w "$output_dir" ]; then
+    echo >&3 "$ME: ERROR: $template_dir exists, but $output_dir is not writable"
+    return 0
+  fi
+  find "$template_dir" -follow -type f -name "*$suffix" -print | while read -r template; do
+    relative_path="${template#$template_dir/}"
+    output_path="$output_dir/${relative_path%$suffix}"
+    subdir=$(dirname "$relative_path")
+    # create a subdirectory where the template file exists
+    mkdir -p "$output_dir/$subdir"
+    echo >&3 "$ME: Running envsubst on $template to $output_path"
+    envsubst "$defined_envs" < "$template" > "$output_path"
+  done
+}
+
+auto_envsubst
+
+exit 0
+EOF
+
+RUN chmod +x /docker-entrypoint.d/30-envsubst-on-templates.sh
+
+# Set proper permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
+# Expose port (Railway will override this)
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
