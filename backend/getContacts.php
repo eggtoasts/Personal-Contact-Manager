@@ -1,6 +1,6 @@
 <?php
 
-    require_once 'dp.php';
+    require_once 'db.php';
     $inData = getRequestInfo();
 
     $contactCount = 0;
@@ -22,9 +22,9 @@
 
             $contactCount++;
             $contactResults .= '{"firstName" : "' . $row["firstName"] . '"},
-                                {"lastName" : "' . $row["lastName"] . '"}, 
-                                {"email" : "' . $row["email"] . '"}, 
-                                {"phone" : "' . $row["phone"] . '"}, 
+                                {"lastName" : "' . $row["lastName"] . '"},
+                                {"email" : "' . $row["email"] . '"},
+                                {"phone" : "' . $row["phone"] . '"},
                                 {"created" : "' . $row["created"] . '"}
                                 ';
         }

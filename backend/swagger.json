@@ -1,0 +1,1022 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Contact Manager API",
+    "description": "A comprehensive API for managing user contacts with authentication and CRUD operations",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Contact Manager Support",
+      "email": "support@contactmanager.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://personal-contact-manager-production.up.railway.app",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/Login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User login",
+        "description": "Authenticate user with email and password",
+        "operationId": "loginUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["login", "password"],
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address",
+                    "example": "john.doe@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "description": "User's password",
+                    "example": "securePassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User registration",
+        "description": "Register a new user account",
+        "operationId": "registerUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["firstName", "lastName", "email", "password"],
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50,
+                    "description": "User's first name",
+                    "example": "John"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50,
+                    "description": "User's last name",
+                    "example": "Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address",
+                    "example": "john.doe@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "description": "User's password",
+                    "example": "securePassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registration successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - user already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getContacts": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Get user contacts",
+        "description": "Retrieve all contacts for a specific user",
+        "operationId": "getContacts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId"],
+                "properties": {
+                  "userId": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "ID of the user whose contacts to retrieve",
+                    "example": 123
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No contacts found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addContact": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Add new contact",
+        "description": "Create a new contact for a user",
+        "operationId": "addContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userId",
+                  "firstName",
+                  "lastName",
+                  "phone",
+                  "email"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "ID of the user adding the contact",
+                    "example": 123
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50,
+                    "description": "Contact's first name",
+                    "example": "Jane"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50,
+                    "description": "Contact's last name",
+                    "example": "Smith"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "pattern": "^[\\d\\s\\-\\(\\)\\+]+$",
+                    "description": "Contact's phone number",
+                    "example": "+1-555-123-4567"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Contact's email address",
+                    "example": "jane.smith@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - contact already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateContact": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Update contact",
+        "description": "Update an existing contact",
+        "operationId": "updateContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contactId",
+                  "firstName",
+                  "lastName",
+                  "phone",
+                  "email"
+                ],
+                "properties": {
+                  "contactId": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "ID of the contact to update",
+                    "example": 456
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50,
+                    "description": "Updated first name",
+                    "example": "Jane"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50,
+                    "description": "Updated last name",
+                    "example": "Smith"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "pattern": "^[\\d\\s\\-\\(\\)\\+]+$",
+                    "description": "Updated phone number",
+                    "example": "+1-555-123-4567"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Updated email address",
+                    "example": "jane.smith@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deleteContact": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Delete contact",
+        "description": "Delete an existing contact",
+        "operationId": "deleteContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["contactId"],
+                "properties": {
+                  "contactId": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "ID of the contact to delete",
+                    "example": 456
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/searchContacts": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Search contacts",
+        "description": "Search for contacts by name, email, or phone",
+        "operationId": "searchContacts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId", "search"],
+                "properties": {
+                  "userId": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "ID of the user whose contacts to search",
+                    "example": 123
+                  },
+                  "search": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Search term (name, email, or phone)",
+                    "example": "Jane"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid search data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No contacts found matching search criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api": {
+      "get": {
+        "tags": ["System"],
+        "summary": "API information",
+        "description": "Get API information and available endpoints",
+        "operationId": "getApiInfo",
+        "responses": {
+          "200": {
+            "description": "API information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Health check",
+        "description": "Check if the API is running",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "healthy"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs": {
+      "get": {
+        "tags": ["System"],
+        "summary": "View request logs",
+        "description": "Get recent API request logs for debugging",
+        "operationId": "getLogs",
+        "parameters": [
+          {
+            "name": "lines",
+            "in": "query",
+            "description": "Number of log lines to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 50
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "description": "Action to perform (clear logs)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["clear"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["System"],
+        "summary": "Clear request logs",
+        "description": "Clear all request logs",
+        "operationId": "clearLogs",
+        "responses": {
+          "200": {
+            "description": "Logs cleared successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Database connection test",
+        "description": "Test database connectivity and configuration",
+        "operationId": "testDatabase",
+        "responses": {
+          "200": {
+            "description": "Database connection successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseTestResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID",
+            "example": 123
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "example": "Doe"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (empty on success)",
+            "example": ""
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Response timestamp",
+            "example": "2024-01-08 15:30:00"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful",
+            "example": true
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID (0 on error)",
+            "example": 0
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name (empty on error)",
+            "example": ""
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name (empty on error)",
+            "example": ""
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Invalid email or password"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Error timestamp",
+            "example": "2024-01-08 15:30:00"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful",
+            "example": false
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example": "Operation completed successfully"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Response timestamp",
+            "example": "2024-01-08 15:30:00"
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Contact's first name",
+            "example": "Jane"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Contact's last name",
+            "example": "Smith"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Contact's email address",
+            "example": "jane.smith@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone number",
+            "example": "+1-555-123-4567"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Contact creation timestamp",
+            "example": "2024-01-08 15:30:00"
+          }
+        }
+      },
+      "ContactsResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            },
+            "description": "Array of contacts"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (empty on success)",
+            "example": ""
+          }
+        }
+      },
+      "ApiInfoResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Contact Manager API"
+          },
+          "version": {
+            "type": "string",
+            "example": "1.0"
+          },
+          "status": {
+            "type": "string",
+            "example": "running"
+          },
+          "server_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "method": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "required_fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "LogsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "total_entries": {
+            "type": "integer",
+            "example": 25
+          },
+          "showing_lines": {
+            "type": "integer",
+            "example": 50
+          },
+          "logs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "method": {
+                  "type": "string"
+                },
+                "endpoint": {
+                  "type": "string"
+                },
+                "full_line": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "raw_logs": {
+            "type": "string",
+            "description": "Raw log content"
+          }
+        }
+      },
+      "DatabaseTestResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Database connection successful"
+          },
+          "test_query": {
+            "type": "object",
+            "properties": {
+              "test": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          },
+          "server_info": {
+            "type": "string",
+            "example": "8.0.35"
+          },
+          "connection_status": {
+            "type": "string",
+            "example": "railway via TCP/IP"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and registration endpoints"
+    },
+    {
+      "name": "Contacts",
+      "description": "Contact management operations (CRUD)"
+    },
+    {
+      "name": "System",
+      "description": "System utilities and monitoring endpoints"
+    }
+  ]
+}
