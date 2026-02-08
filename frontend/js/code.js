@@ -41,6 +41,17 @@ function doLogin() {
         firstName = jsonObject.firstName;
         lastName = jsonObject.lastName;
 
+        // Save user data to localStorage for color.html page
+        const userData = {
+          id: userId,
+          firstName: firstName,
+          lastName: lastName,
+          success: jsonObject.success,
+          timestamp: jsonObject.timestamp,
+        };
+        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("loginTime", new Date().toISOString());
+
         saveCookie();
 
         window.location.href = "color.html";
