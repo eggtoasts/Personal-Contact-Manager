@@ -7,6 +7,69 @@ let userId = 0;
 let firstName = "";
 let lastName = "";
 
+function Register(){
+  
+//Get informatin user entered into Register.html
+  firstName = document.getElementById("firstName").value;
+  lastName = document.getElementById("lastName").value;
+  let login = document.getElementById("loginName").value;
+  let password = document.getElementById("loginPassword").value;
+
+  let tmp = {
+    firstName: firstName,
+    lastName: lastName,
+    login: login,
+    password: password
+  };
+
+  let jsonPayload = JSON.stringify(tmp);
+
+  let url = urlBase + "/Register";
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+ 
+  try
+  {
+    xhr.onreadystatechange = function () 
+    {
+      console.log("XHR State: ", this.readyState, "Status: ", this.status);
+    
+      if(this.readyState == 4 && this.status == 200)
+      {
+        console.log("Reponse received: ", xhr.responseText);
+        let jsonObject = JSON.parse( xhr.responseText );
+        console.log("Parsed response:", jsonObject);
+
+        userId = jsonObject.id;
+
+        if(userId < 1){
+          document.getElementById("loginResult").innerHTML = "Registration Unsuccessful";
+          return;
+        }else{
+          document.getElementById("loginResult").innerHTML = "Registration Complete";
+        }
+    
+        firstName = jsonObject.firstName;
+        lastName = jsonObject.lastName;
+        login = jsonObject.login;
+       
+
+        console.log("Registration successful, user:",
+          firstName,
+          lastName,
+          login,
+        );
+      }
+    };
+    xhr.send(jsonPayload);
+  }catch(err){
+    		document.getElementById("loginResult").innerHTML = err.message;
+  }
+}
+
+
 function doLogin() {
   try {
     userId = 0;
