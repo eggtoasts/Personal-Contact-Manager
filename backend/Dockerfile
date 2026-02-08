@@ -1,5 +1,4 @@
-# Multi-stage build for PHP-FPM + Nginx
-FROM php:8.2-fpm as php
+FROM php:8.2-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -19,7 +18,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Use production PHP configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Create application directory
+# Set working directory
 WORKDIR /var/www/html
 
 # Copy application files
@@ -32,58 +31,73 @@ RUN chown -R www-data:www-data /var/www/html \
     && chown www-data:www-data /var/www/html/requests.log \
     && chmod 666 /var/www/html/requests.log
 
-# Create basic nginx configuration that allows direct .php access
-RUN echo 'server {' > /etc/nginx/sites-available/default \
-    && echo '    listen 80;' >> /etc/nginx/sites-available/default \
-    && echo '    root /var/www/html;' >> /etc/nginx/sites-available/default \
-    && echo '    index index.php;' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # CORS headers' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Origin "*" always;' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;' >> /etc/nginx/sites-available/default \
-    && echo '    add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # Handle OPTIONS requests' >> /etc/nginx/sites-available/default \
-    && echo '    if ($request_method = OPTIONS) {' >> /etc/nginx/sites-available/default \
-    && echo '        return 200;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '' >> /etc/nginx/sites-available/default \
-    && echo '    # Handle PHP files' >> /etc/nginx/sites-available/default \
-    && echo '    location ~ \.php$ {' >> /etc/nginx/sites-available/default \
-    && echo '        try_files $uri =404;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_pass 127.0.0.1:9000;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_index index.php;' >> /etc/nginx/sites-available/default \
-    && echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/sites-available/default \
-    && echo '        include fastcgi_params;' >> /etc/nginx/sites-available/default \
-    && echo '    }' >> /etc/nginx/sites-available/default \
-    && echo '}' >> /etc/nginx/sites-available/default
+# Create nginx configuration with clean URLs
+RUN cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80;
+    root /var/www/html;
+    index index.php;
 
-# Create supervisor configuration with stdout/stderr logging for Railway
-RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'nodaemon=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'silent=false' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '[program:nginx]' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'command=nginx -g "daemon off;"' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'priority=10' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo '[program:php-fpm]' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'command=php-fpm --nodaemonize' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'priority=5' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf \
-    && echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/supervisord.conf
+    # Configure logs for Railway - output to stdout/stderr
+    access_log /dev/stdout combined;
+    error_log /dev/stderr warn;
+
+    # CORS headers
+    add_header Access-Control-Allow-Origin "*" always;
+    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With" always;
+
+    # Handle preflight OPTIONS requests
+    if ($request_method = OPTIONS) {
+        return 200;
+    }
+
+    # Health check endpoint - don't log these for cleaner logs
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    # Clean URL rewrites for API endpoints
+    location /api { try_files $uri /api_info.php; }
+    location /info { try_files $uri /api_info.php; }
+    location /swagger { try_files $uri /swagger.php; }
+    location /docs { try_files $uri /swagger.php; }
+    location /swagger.json { try_files $uri /swagger_json.php; }
+    location /logs { try_files $uri /logs.php; }
+    location /db { try_files $uri /db_test.php; }
+    location /test-logs { try_files $uri /log_test.php; }
+
+    # Main API endpoints (clean URLs)
+    location /Login { try_files $uri /Login.php; }
+    location /Register { try_files $uri /Register.php; }
+    location /getContacts { try_files $uri /getContacts.php; }
+    location /addContact { try_files $uri /addContact.php; }
+    location /updateContact { try_files $uri /updateContact.php; }
+    location /deleteContact { try_files $uri /deleteContact.php; }
+    location /editContact { try_files $uri /editContact.php; }
+    location /searchContacts { try_files $uri /searchContacts.php; }
+
+    # Handle direct .php access and all other requests
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param REQUEST_URI $request_uri;
+        fastcgi_param QUERY_STRING $query_string;
+        fastcgi_param REQUEST_METHOD $request_method;
+        fastcgi_param CONTENT_TYPE $content_type;
+        fastcgi_param CONTENT_LENGTH $content_length;
+        include fastcgi_params;
+    }
+
+    # Deny access to sensitive files
+    location ~ /\. { deny all; }
+    location ~ \.(env|log)$ { deny all; }
+}
+EOF
 
 # Configure nginx to output logs to stdout/stderr for Railway
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -99,11 +113,45 @@ RUN echo '[global]' > /usr/local/etc/php-fpm.d/railway.conf \
     && echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.d/railway.conf \
     && echo 'decorate_workers_output = no' >> /usr/local/etc/php-fpm.d/railway.conf
 
-# Create startup script inline
+# Configure PHP error logging to stderr for Railway
+RUN echo "log_errors = On" >> /usr/local/etc/php/php.ini \
+    && echo "error_log = /proc/self/fd/2" >> /usr/local/etc/php/php.ini \
+    && echo "display_errors = Off" >> /usr/local/etc/php/php.ini
+
+# Create supervisor configuration with stdout/stderr logging for Railway
+RUN cat > /etc/supervisor/conf.d/supervisord.conf << 'EOF'
+[supervisord]
+nodaemon=true
+silent=false
+logfile=/dev/stdout
+logfile_maxbytes=0
+
+[program:nginx]
+command=nginx -g "daemon off;"
+autostart=true
+autorestart=true
+priority=10
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+
+[program:php-fpm]
+command=php-fpm --nodaemonize
+autostart=true
+autorestart=true
+priority=5
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+EOF
+
+# Create startup script for Railway
 RUN cat > /start.sh << 'EOF'
 #!/bin/bash
 
-echo "Starting PHP-FPM + Nginx with Supervisor for Railway..."
+echo "Starting nginx + PHP-FPM with Supervisor for Railway..."
 
 # Update nginx port for Railway if PORT environment variable is set
 if [ ! -z "$PORT" ]; then
@@ -126,10 +174,6 @@ ln -sf /dev/stderr /var/log/nginx/error.log
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 
-# Enable PHP error logging to stderr for Railway
-echo "log_errors = On" >> /usr/local/etc/php/php.ini
-echo "error_log = /proc/self/fd/2" >> /usr/local/etc/php/php.ini
-
 # Start supervisor which will manage both PHP-FPM and Nginx
 echo "Starting Supervisor to manage PHP-FPM and Nginx..."
 echo "All logs will be output to stdout/stderr for Railway visibility"
@@ -138,9 +182,7 @@ EOF
 
 RUN chmod +x /start.sh
 
-# Router is no longer needed since nginx handles routing directly
-
-# Expose port 80 (Railway will override with PORT env var)
+# Expose port (Railway will override with PORT env var)
 EXPOSE 80
 
 # Start both services
