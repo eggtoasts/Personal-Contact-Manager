@@ -1,7 +1,7 @@
 <?php
 
 // Get Railway's DATABASE_URL environment variable
-$databaseUrl = getenv('DATABASE_URL') ?: $_ENV['DATABASE_URL'] ?: null;
+$databaseUrl = getenv('DB_CONNECTION') ?: $_ENV['DB_CONNECTION'] ?: null;
 
 if ($databaseUrl) {
     // Parse Railway's DATABASE_URL format: mysql://user:password@host:port/database
