@@ -17,9 +17,67 @@
     />
 
     <style>
+      .shadow-style {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .shadow-style::after {
+        content: "";
+        position: absolute;
+        bottom: -200px;
+        right: -350px;
+        width: 900px;
+        height: 900px;
+        background-image: url("fullbody_sonic.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom right;
+        opacity: 0.15;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .shadow-style > div {
+        position: relative;
+        z-index: 1;
+      }
+
       body {
         font-family: "Inter", "Poppins", sans-serif;
         background-color: #f5f2e9;
+      }
+
+      .test {
+        --bg-color-1: #054bb3;
+        --bg-color-2: #0e54be;
+        --size: 30px;
+        --half-size: 15px;
+
+        background-color: var(--bg-color-1);
+        background-image:
+          linear-gradient(
+            45deg,
+            var(--bg-color-2) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--bg-color-2) 75%,
+            var(--bg-color-2)
+          ),
+          linear-gradient(
+            45deg,
+            var(--bg-color-2) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--bg-color-2) 75%,
+            var(--bg-color-2)
+          );
+
+        background-size: var(--size) var(--size);
+        background-position:
+          0 0,
+          var(--half-size) var(--half-size);
+        background-attachment: fixed;
       }
 
       .shadow-style {
@@ -71,12 +129,12 @@
     </style>
   </head>
   <body
-    class="bg-[url('./checkered-bg.jpg')] bg-cover min-h-screen w-full flex items-center justify-center p-3 sm:p-4"
+    class="test min-h-screen w-full flex items-center justify-center p-3 sm:p-4"
   >
-    <div class="w-full max-w-[640px] flex flex-col items-center">
+    <div class="w-full max-w-[640px] gap-4 flex flex-col items-center">
       <div class="portrait-logo h-28 shrink-0">
         <img
-          src="./cast.gif"
+          src="./sonic_logo.png"
           alt="Profile logo"
           class="block w-full h-full object-cover"
         />
@@ -92,7 +150,11 @@
             Sign in
           </h1>
 
-          <form onsubmit="event.preventDefault(); doLogin();"
+          <form
+            onsubmit="
+              event.preventDefault();
+              doLogin();
+            "
             class="w-full flex flex-col gap-4 sm:gap-6"
           >
             <div class="flex flex-col gap-2 w-full">
@@ -101,7 +163,9 @@
                 class="text-[#0F172A] text-sm sm:text-base font-medium"
                 >Email</label
               >
-            <input type="email" id="loginName"
+              <input
+                type="email"
+                id="loginName"
                 required
                 placeholder="user@mail.com"
                 class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
@@ -122,8 +186,10 @@
                   <span id="toggleText">Show</span>
                 </button>
               </div>
+
               <input
-               <input type="password" id="loginPassword"
+                type="password"
+                id="loginPassword"
                 required
                 placeholder="Enter your password"
                 class="h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl border border-[#424242] bg-white text-[#0F172A] text-sm sm:text-base px-3 sm:px-5 outline-none focus:border-[#424242] focus:ring-0 transition-all"
@@ -131,7 +197,10 @@
             </div>
 
             <div class="flex flex-col gap-3 sm:gap-4 items-center mt-1 sm:mt-2">
-              <span id="loginResult" class="text-red-600 text-sm font-bold"></span>
+              <span
+                id="loginResult"
+                class="text-red-600 text-sm font-bold"
+              ></span>
               <button
                 type="submit"
                 class="border-2 k w-full h-12 sm:h-14 lg:h-16 bg-black hover:from-[#4f46e5] hover:to-[#7c3aed] text-white font-medium text-lg sm:text-xl md:text-[22px] transition-all shadow-lg hover:shadow-xl"
