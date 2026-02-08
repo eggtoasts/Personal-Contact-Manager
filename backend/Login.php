@@ -5,8 +5,6 @@ require_once 'db.php';
 // Set response headers
 header('Content-Type: application/json');
 
-
-
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

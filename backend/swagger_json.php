@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit();
 }
 
-// Get the current server URL for dynamic server configuration
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+// Get the current server URL for dynamic server configuration - force HTTPS for Railway
+$protocol = 'https'; // Railway always uses HTTPS
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
 $baseUrl = $protocol . '://' . $host;
 
