@@ -1,0 +1,162 @@
+# Docker Compose configuration for Contact Manager application
+# Includes backend API, frontend, MySQL database, and database management UI
+
+version: "3.8"
+
+services:
+  # Backend API Service (PHP + Nginx)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: contact_manager_backend
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=contact_manager
+      - DB_USER=root
+      - DB_PASS=contact_manager_password_2024
+      - DB_CONNECTION=mysql:host=mysql;dbname=contact_manager;charset=utf8mb4
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - contact_manager_network
+    volumes:
+      - ./backend:/var/www/html
+      - backend_logs:/var/log
+
+  # Frontend Service (Static files with Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: contact_manager_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - API_URL=http://localhost:8000
+    networks:
+      - contact_manager_network
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: contact_manager_mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: contact_manager_password_2024
+      MYSQL_DATABASE: contact_manager
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_user_password_2024
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./contact_manager_db.sql:/docker-entrypoint-initdb.d/contact_manager_db.sql:ro
+      - mysql_config:/etc/mysql/conf.d
+    networks:
+      - contact_manager_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-pcontact_manager_password_2024",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # phpMyAdmin - Database Management UI
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: contact_manager_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: contact_manager_password_2024
+      MYSQL_ROOT_PASSWORD: contact_manager_password_2024
+      PMA_ABSOLUTE_URI: http://localhost:8080/
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - contact_manager_network
+
+  # Adminer - Alternative lightweight database UI
+  adminer:
+    image: adminer:4.8.1
+    container_name: contact_manager_adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - contact_manager_network
+
+# Named volumes for persistent data
+volumes:
+  mysql_data:
+    driver: local
+    name: contact_manager_mysql_data
+  mysql_config:
+    driver: local
+    name: contact_manager_mysql_config
+  backend_logs:
+    driver: local
+    name: contact_manager_backend_logs
+
+# Custom network for service communication
+networks:
+  contact_manager_network:
+    driver: bridge
+    name: contact_manager_network
+
+# Development override - uncomment for development mode
+# To use: docker-compose -f compose.yaml -f compose.dev.yaml up
+#
+# Additional services for development can be added here:
+#
+# services:
+#   # Redis for caching (optional)
+#   redis:
+#     image: redis:7-alpine
+#     container_name: contact_manager_redis
+#     restart: unless-stopped
+#     ports:
+#       - "6379:6379"
+#     networks:
+#       - contact_manager_network
+#
+#   # Mailhog for email testing (optional)
+#   mailhog:
+#     image: mailhog/mailhog:v1.0.1
+#     container_name: contact_manager_mailhog
+#     restart: unless-stopped
+#     ports:
+#       - "1025:1025" # SMTP
+#       - "8025:8025" # Web UI
+#     networks:
+#       - contact_manager_network

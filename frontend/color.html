@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Success - Contact Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Inter", "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .success-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+      }
+
+      .checkmark {
+        animation: checkmark 0.6s ease-in-out;
+      }
+
+      @keyframes checkmark {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+        }
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center min-h-screen p-4">
+    <div class="success-card w-full max-w-md rounded-2xl p-8 text-center fade-in">
+      <!-- Success Icon -->
+      <div class="mb-6">
+        <div class="w-20 h-20 mx-auto bg-green-500 rounded-full flex items-center justify-center checkmark pulse">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Success Message -->
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">
+        Login Successful! 🎉
+      </h1>
+
+      <p class="text-lg text-gray-600 mb-8">
+        Welcome to Contact Manager! You have successfully logged in.
+      </p>
+
+      <!-- User Info Display -->
+      <div id="userInfo" class="bg-gray-50 rounded-lg p-4 mb-6 hidden">
+        <h3 class="font-semibold text-gray-700 mb-2">Welcome back,</h3>
+        <p id="userName" class="text-xl font-bold text-indigo-600"></p>
+        <p id="userId" class="text-sm text-gray-500"></p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-4">
+        <button
+          onclick="goToDashboard()"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105"
+        >
+          Continue to Dashboard
+        </button>
+
+        <button
+          onclick="logout()"
+          class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-300"
+        >
+          Logout
+        </button>
+      </div>
+
+      <!-- Debug Info -->
+      <div id="debugInfo" class="mt-8 text-left bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono hidden">
+        <h4 class="text-white font-bold mb-2">Login Debug Info:</h4>
+        <div id="debugContent"></div>
+      </div>
+
+      <!-- Toggle Debug -->
+      <button
+        onclick="toggleDebug()"
+        class="mt-4 text-xs text-gray-400 hover:text-gray-600 underline"
+      >
+        Toggle Debug Info
+      </button>
+    </div>
+
+    <script>
+      // Get user data from localStorage (saved by login page)
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const loginTime = localStorage.getItem('loginTime') || new Date().toISOString();
+
+      // Display user information if available
+      if (userData.firstName && userData.lastName) {
+        document.getElementById('userInfo').classList.remove('hidden');
+        document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
+        document.getElementById('userId').textContent = `User ID: ${userData.id}`;
+      }
+
+      // Display debug information
+      function updateDebugInfo() {
+        const debugContent = document.getElementById('debugContent');
+        debugContent.innerHTML = `
+          <div><span class="text-yellow-400">User ID:</span> ${userData.id || 'Not available'}</div>
+          <div><span class="text-yellow-400">First Name:</span> ${userData.firstName || 'Not available'}</div>
+          <div><span class="text-yellow-400">Last Name:</span> ${userData.lastName || 'Not available'}</div>
+          <div><span class="text-yellow-400">Login Time:</span> ${loginTime}</div>
+          <div><span class="text-yellow-400">Success:</span> ${userData.success || 'Not available'}</div>
+          <div><span class="text-yellow-400">Timestamp:</span> ${userData.timestamp || 'Not available'}</div>
+          <div><span class="text-yellow-400">Current URL:</span> ${window.location.href}</div>
+          <div><span class="text-yellow-400">Referrer:</span> ${document.referrer || 'Direct access'}</div>
+        `;
+      }
+
+      // Initialize debug info
+      updateDebugInfo();
+
+      // Toggle debug information
+      function toggleDebug() {
+        const debugInfo = document.getElementById('debugInfo');
+        debugInfo.classList.toggle('hidden');
+      }
+
+      // Navigate to dashboard (placeholder)
+      function goToDashboard() {
+        // For now, just show an alert
+        alert('Dashboard functionality coming soon!\n\nThis would typically redirect to your main application.');
+        // In a real app, you would redirect to the dashboard:
+        // window.location.href = '/dashboard.html';
+      }
+
+      // Logout function
+      function logout() {
+        // Clear user data
+        localStorage.removeItem('userData');
+        localStorage.removeItem('loginTime');
+
+        // Redirect back to login
+        window.location.href = '/index.html';
+      }
+
+      // Auto-redirect after 30 seconds (optional)
+      let autoRedirectTimer;
+      function startAutoRedirect() {
+        autoRedirectTimer = setTimeout(() => {
+          if (confirm('You will be redirected to the dashboard. Continue?')) {
+            goToDashboard();
+          }
+        }, 30000); // 30 seconds
+      }
+
+      // Start auto-redirect timer
+      // Uncomment the line below to enable auto-redirect
+      // startAutoRedirect();
+
+      // Clear timer if user interacts with the page
+      document.addEventListener('click', () => {
+        if (autoRedirectTimer) {
+          clearTimeout(autoRedirectTimer);
+          autoRedirectTimer = null;
+        }
+      });
+
+      // Console log for debugging
+      console.log('Login success page loaded');
+      console.log('User data:', userData);
+      console.log('Login time:', loginTime);
+
+      // Show success message in console
+      console.log('%c✅ LOGIN SUCCESSFUL!', 'color: #10B981; font-size: 16px; font-weight: bold;');
+    </script>
+  </body>
+</html>
