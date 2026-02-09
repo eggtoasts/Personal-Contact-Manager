@@ -165,7 +165,7 @@ function addContact() {
   let contact_firstName = document.getElementById("firstName").value;
   let contact_lastName = document.getElementById("lastName").value;
   let contact_email = document.getElementById("email").value;
-  let contact_phone = document.getElementByID("phone").value;
+  let contact_phone = document.getElementById("phone").value;
 
   console.log("Contact info: ");
 
