@@ -158,24 +158,42 @@ function doLogin() {
 }
 
 function addContact() {
-  console.log("Save Contact Clicked!")
-
-  const modal = document.getElementById("contactModal");
 
   let contact_firstName = document.getElementById("firstName").value;
   let contact_lastName = document.getElementById("lastName").value;
   let contact_email = document.getElementById("email").value;
   let contact_phone = document.getElementById("phone").value;
 
-  console.log("Contact info: ");
+  let tmp = {
+    userId:userId,
+    firstName:contact_firstName,
+    lastName:contact_lastName,
+    phone:contact_phone,
+    email:contact_email
+  };
 
-  console.log(
-    " firstname: ", contact_firstName,
-    " lastname: ", contact_lastName,
-    " phone: ", contact_phone,
-    " email: ", contact_email,
-  );
+  let jsonPayload = JSON.stringify(tmp);
 
+  let url = urlBase + "/addContact";
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try
+  {
+    xhr.onreadystatechange = function()
+    {
+      console.log("XHR State: ", this.readyState, "Status", this.status);
+
+      if(this.readyState == 4 && this.status == 200){
+        console.log("Contact Added!");
+      }
+    };
+    xhr.send(jsonPayload);
+  }catch(err){
+    console.log("ERROR");
+  }
 }
 
 function editContact() {}
