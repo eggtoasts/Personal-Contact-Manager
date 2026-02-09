@@ -290,3 +290,17 @@ function searchColor() {
     document.getElementById("colorSearchResult").innerHTML = err.message;
   }
 }
+
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById("loginPassword");
+  const toggleText = document.getElementById("toggleText");  
+
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    toggleText.textContent = "Hide";
+  } else {      
+    passwordInput.type = "password";
+    toggleText.textContent = "Show";
+  }   
+}
