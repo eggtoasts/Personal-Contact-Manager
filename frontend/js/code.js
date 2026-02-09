@@ -223,9 +223,9 @@ function addContactToDashboard(contactInfo){
   newContact.id = "indiv-contact";
 
   //Update with new contact inforamtion
-  contact.querySelector("#contact-name") = contactInfo.firstName + " " +  contactInfo.lastName;
-  contact.querySelector("#contact-email") = contactInfo.email;
-  contact.querySelector("#contact-phone") = contactInfo.phone;
+  newContact.querySelector("#contact-name").textContent = contactInfo.firstName + " " +  contactInfo.lastName;
+  newContact.querySelector("#contact-email").textContent = contactInfo.email;
+  newContact.querySelector("#contact-phone").textContent = contactInfo.phone;
 
   //Add contact card to dashboard
   contactContainer.appendChild(newContact);
