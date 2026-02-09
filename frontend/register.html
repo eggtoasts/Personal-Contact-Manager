@@ -25,14 +25,15 @@
       .shadow-style::after {
         content: "";
         position: absolute;
-        bottom: -200px;
-        right: -350px;
-        width: 900px;
-        height: 900px;
-        background-image: url("fullbody_sonic.png");
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);      
+        width: 80%; 
+        height: 80%;
+        background-image: url("fullbody_sonic.svg");
         background-size: contain;
         background-repeat: no-repeat;
-        background-position: bottom right;
+        background-position: center;
         opacity: 0.05;
         pointer-events: none;
         z-index: 0;
