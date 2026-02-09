@@ -2,10 +2,10 @@
 require_once 'middleware.php';
 require_once 'db.php';
 
-// Set response headers
+
 header('Content-Type: application/json');
 
-// Only allow POST requests
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     $error = [
@@ -26,12 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 try {
     error_log("[LOGIN] Starting login attempt");
 
-    // Get and validate request data
+  
     $inData = getRequestInfo();
 
     error_log("[LOGIN] Request data received: " . ($inData ? "valid JSON" : "no data"));
 
-    // Validate that we have the required fields
+    
     if (!$inData) {
         error_log("[LOGIN] ERROR: No input data received");
         returnWithError("No data received. Please send JSON data in request body.", 400);
@@ -55,14 +55,14 @@ try {
 
     error_log("[LOGIN] Login attempt for email: " . $email);
 
-    // Validate email format
+  
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         error_log("[LOGIN] ERROR: Invalid email format for: " . $email);
         returnWithError("Invalid email format.", 400);
         exit();
     }
 
-    // Check if database connection exists
+
     if (!isset($pdo) || !$pdo) {
         error_log("[LOGIN] ERROR: No database connection available");
         returnWithError("Database connection failed. Please try again later.", 500);
@@ -71,7 +71,7 @@ try {
 
     error_log("[LOGIN] Database connection verified");
 
-    // Prepare and execute database query
+    
     error_log("[LOGIN] Preparing database query for user lookup");
     $stmt = $pdo->prepare("SELECT user_id, first_name, last_name, password FROM user_tb WHERE email = ?");
 
@@ -93,17 +93,18 @@ try {
     $user = $stmt->fetch();
 
     if (!$user) {
-        // User not found - don't reveal this information for security
+        // User not found
         error_log("[LOGIN] ERROR: User not found for email: " . $email);
         returnWithError("Invalid email or password.", 401);
         exit();
     }
 
     error_log("[LOGIN] User found in database: " . $user['first_name'] . " " . $user['last_name']);
-
-    // Verify password (plain text comparison)
+    
+    // verify password
     error_log("[LOGIN] Verifying password for user: " . $email);
-    if ($password !== $user["password"]) {
+   
+    if (!password_verify($password, $user["password"])) { 
         error_log("[LOGIN] ERROR: Password verification failed for email: " . $email);
         returnWithError("Invalid email or password.", 401);
         exit();
@@ -111,29 +112,29 @@ try {
 
     error_log("[LOGIN] Password verification successful for: " . $email);
 
-    // Validate user data
+  
     if (!isset($user["user_id"]) || !isset($user["first_name"]) || !isset($user["last_name"])) {
         error_log("[LOGIN] ERROR: Incomplete user data for email: " . $email);
         returnWithError("User data is incomplete. Please contact support.", 500);
         exit();
     }
 
-    // Success - return user information
+
     error_log("[LOGIN] SUCCESS: Login successful for user ID: " . $user["user_id"] . " (" . $user["first_name"] . " " . $user["last_name"] . ")");
     returnWithInfo($user["first_name"], $user["last_name"], $user["user_id"]);
 
 } catch (PDOException $e) {
-    // Database specific errors
+
     error_log("[LOGIN] PDO ERROR: " . $e->getMessage());
     error_log("[LOGIN] PDO ERROR Stack trace: " . $e->getTraceAsString());
     returnWithError("Database error occurred. Please try again later.", 500);
 } catch (Exception $e) {
-    // General errors
+   
     error_log("[LOGIN] EXCEPTION: " . $e->getMessage());
     error_log("[LOGIN] EXCEPTION Stack trace: " . $e->getTraceAsString());
     returnWithError("An unexpected error occurred. Please try again later.", 500);
 } catch (Error $e) {
-    // PHP fatal errors
+
     error_log("[LOGIN] FATAL ERROR: " . $e->getMessage());
     error_log("[LOGIN] FATAL ERROR Stack trace: " . $e->getTraceAsString());
     returnWithError("A system error occurred. Please try again later.", 500);
