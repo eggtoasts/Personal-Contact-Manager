@@ -12,9 +12,8 @@
     $userId = $inData["userId"];
 
     $stmt = $pdo->prepare("INSERT INTO contacts_tb (first_name, last_name, email, phone, user_id) VALUES (?, ?, ?, ?, ?) ");
-    $stmt->bind_param("ssssi", $firstName, $lastName, $email, $phone, $userId);
     
-    if($stmt->excute()) {
+    if($stmt->excute([$firstName, $lastName, $email, $phone, $userId])) {
         
         returnWithInfo();
     
