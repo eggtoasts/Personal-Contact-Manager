@@ -164,6 +164,10 @@ function addContact() {
   let contact_email = document.getElementById("email").value;
   let contact_phone = document.getElementById("phone").value;
 
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  
+  userId = userData.id;
+  
   let tmp = {
     userId:userId,
     firstName:contact_firstName,
