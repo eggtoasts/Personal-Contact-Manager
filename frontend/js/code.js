@@ -159,13 +159,14 @@ function doLogin() {
 
 function addContact() {
 
+  //Get information from contactModal;
   let contact_firstName = document.getElementById("firstName").value;
   let contact_lastName = document.getElementById("lastName").value;
   let contact_email = document.getElementById("email").value;
   let contact_phone = document.getElementById("phone").value;
 
+  //Get saved userId
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-  
   userId = userData.id;
   
   let tmp = {
@@ -175,8 +176,6 @@ function addContact() {
     phone:contact_phone,
     email:contact_email
   };
-
-  console.log("user id: ", userId);
 
   let jsonPayload = JSON.stringify(tmp);
 
@@ -200,10 +199,10 @@ function addContact() {
 
         let isSuccess = jsonObject.success;
 
+        //If contact successfully added, add contact to dashboard
         if(isSuccess){
           console.log("Contact Added!");
-        }else{
-          console.log("Contact Add Unsuccessful");
+          addContactToDashboard(tmp);
         }
 
       }
@@ -212,6 +211,25 @@ function addContact() {
   }catch(err){
     console.log("ERROR");
   }
+}
+
+function addContactToDashboard(contactInfo){
+
+  const contactContainer = document.getElementById("contacts");
+  const contact = document.getElementById("og-contact");
+
+  //Clone contact card and change id so card will appear
+  let newContact = contact.cloneNode(true);
+  newContact.id = "indiv-contact";
+
+  //Update with new contact inforamtion
+  contact.querySelector("#contact-name") = contactInfo.firstName + " " +  contactInfo.lastName;
+  contact.querySelector("#contact-email") = contactInfo.email;
+  contact.querySelector("#contact-phone") = contactInfo.phone;
+
+  //Add contact card to dashboard
+  contactContainer.appendChild(newContact);
+
 }
 
 function editContact() {}
