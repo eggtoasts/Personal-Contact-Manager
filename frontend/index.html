@@ -23,22 +23,29 @@
       }
 
       .shadow-style::after {
-        content: "";
-        position: absolute;
-        bottom: -200px;
-        right: -350px;
-        width: 900px;
-        height: 900px;
-        background-image: url("fullbody_sonic.svg");
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: bottom right;
-        opacity: 0.1;
-        pointer-events: none;
-        z-index: 0;
+       content: "";
+  position: absolute;
+  /* 1. Center the starting point */
+  top: 50%;
+  left: 50%;
+  /* 2. Pull the image back by half its own width/height */
+  transform: translate(-50%, -50%);
+  
+  /* 3. Set a size relative to the container so it doesn't vanish */
+  width: 90%; 
+  height: 90%;
+  
+  background-image: url("fullbody_sonic.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
 
-        background-color: rgb(255, 194, 62);
-        background-blend-mode: multiply;
+  /* Keep your existing blend colors */
+  background-color: rgb(255, 194, 62);
+  background-blend-mode: multiply;
       }
 
       .shadow-style > div {
