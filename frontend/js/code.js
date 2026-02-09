@@ -222,10 +222,25 @@ function addContactToDashboard(contactInfo){
   let newContact = contact.cloneNode(true);
   newContact.id = "indiv-contact";
 
+  console.log("Contact Info: ",
+    "first name: ", contactInfo.firstName,
+    "last name: ", contactInfo.lastName,
+    "email: ", contactInfo.email,
+    "phone: ", contactInfo.phone
+  );
+
+  console.log("Card Info: ", 
+    newContact.querySelector("#contact-name").textContent,
+    newContact.querySelector("#contact-email").textContent,
+    newContact.querySelector("#contact-phone").textContent 
+  );
+
+  /*
   //Update with new contact inforamtion
   newContact.querySelector("#contact-name").textContent = contactInfo.firstName + " " +  contactInfo.lastName;
   newContact.querySelector("#contact-email").textContent = contactInfo.email;
   newContact.querySelector("#contact-phone").textContent = contactInfo.phone;
+*/
 
   //Add contact card to dashboard
   contactContainer.appendChild(newContact);
