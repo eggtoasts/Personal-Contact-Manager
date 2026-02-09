@@ -24,7 +24,7 @@ API Documentation: [ ]
 
 **Database**: MySQL (Hosted on a remote server)
 
-**Server/Hosting**: Linux/Apache hosted on [ ]
+**Server/Hosting**: Linux/Apache hosted on Railway
 
 **Documentation**: SwaggerHub (API)
 
