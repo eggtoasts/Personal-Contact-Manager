@@ -7,24 +7,20 @@ let userId = 0;
 let firstName = "";
 let lastName = "";
 
-function Register(){
-
-//Get informatin user entered into Register.html
+function Register() {
+  //Get informatin user entered into Register.html
   firstName = document.getElementById("firstName").value;
   lastName = document.getElementById("lastName").value;
   let login = document.getElementById("loginName").value;
   let password = document.getElementById("loginPassword").value;
 
-  console.log("User info:" , 
-    firstName, " ",
-    lastName, " ",
-    login);
+  console.log("User info:", firstName, " ", lastName, " ", login);
 
   let tmp = {
     firstName: firstName,
     lastName: lastName,
     login: login,
-    password: password
+    password: password,
   };
 
   let jsonPayload = JSON.stringify(tmp);
@@ -34,34 +30,33 @@ function Register(){
   let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
- 
-  try
-  {
-    xhr.onreadystatechange = function () 
-    {
+
+  try {
+    xhr.onreadystatechange = function () {
       console.log("XHR State: ", this.readyState, "Status: ", this.status);
-    
-      if(this.readyState == 4 && this.status == 200)
-      {
+
+      if (this.readyState == 4 && this.status == 200) {
         console.log("Reponse received: ", xhr.responseText);
-        let jsonObject = JSON.parse( xhr.responseText );
+        let jsonObject = JSON.parse(xhr.responseText);
         console.log("Parsed response:", jsonObject);
 
         userId = jsonObject.id;
 
-        if(userId < 1){
-          document.getElementById("loginResult").innerHTML = "Registration Unsuccessful";
+        if (userId < 1) {
+          document.getElementById("loginResult").innerHTML =
+            "Registration Unsuccessful";
           return;
-        }else{
-          document.getElementById("loginResult").innerHTML = "Registration Complete";
+        } else {
+          document.getElementById("loginResult").innerHTML =
+            "Registration Complete";
         }
-    
+
         firstName = jsonObject.firstName;
         lastName = jsonObject.lastName;
         login = jsonObject.login;
-       
 
-        console.log("Registration successful, user:",
+        console.log(
+          "Registration successful, user:",
           firstName,
           lastName,
           login,
@@ -69,11 +64,10 @@ function Register(){
       }
     };
     xhr.send(jsonPayload);
-  }catch(err){
-    		document.getElementById("loginResult").innerHTML = err.message;
+  } catch (err) {
+    document.getElementById("loginResult").innerHTML = err.message;
   }
 }
-
 
 function doLogin() {
   try {
@@ -291,16 +285,48 @@ function searchColor() {
   }
 }
 
-
 function togglePasswordVisibility() {
   const passwordInput = document.getElementById("loginPassword");
-  const toggleText = document.getElementById("toggleText");  
+  const toggleText = document.getElementById("toggleText");
 
   if (passwordInput.type === "password") {
     passwordInput.type = "text";
     toggleText.textContent = "Hide";
-  } else {      
+  } else {
     passwordInput.type = "password";
     toggleText.textContent = "Show";
-  }   
+  }
 }
+
+function openModal(mode) {
+  const modal = document.getElementById("contactModal");
+  const title = document.getElementById("modalTitle");
+
+  //resets data for every reopen
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+
+  //add a "edit" mode later
+  if (mode === "add") {
+    currentContactId = -1;
+    title.innerText = "Add Contact";
+    document.getElementById("firstName").value = "";
+    document.getElementById("lastName").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("phone").value = "";
+  }
+}
+
+function closeModal() {
+  const modal = document.getElementById("contactModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+//close modal if clicking outside
+window.onclick = function (event) {
+  const modal = document.getElementById("contactModal");
+  if (event.target == modal) {
+    closeModal();
+  }
+};
