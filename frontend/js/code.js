@@ -158,31 +158,14 @@ function doLogin() {
 }
 
 function addContact() {
+  console.log("Save Contact Clicked!")
+
   const modal = document.getElementById("contactModal");
 
-  let contact_firstName = modal.getElementById("firstName").value;
-  let contact_lastName = modal.getElementById("lastName").value;
-  let contact_email = modal.getElementsById("email").value;
-  let contact_phone = modal.getElementByID("phone").value;
-
-  console.log("New Contact info",
-    " firstname: ", contact_firstName,
-    " lastname: ", contact_lastName,
-    " email: ", contact_email,
-    " phone: ", contact_phone,
-  );
-
-  let tmp = {
-    userId:userId,
-    firstName:contact_firstName,
-    lastname:contact_lastName,
-    phone:contact_phone,
-    email:contact_email
-  };
-
-  let jsonPayload = JSON.stringify(tmp);
-
-  let url = urlBase + "/addContact";
+  let contact_firstName = document.getElementById("firstName").value;
+  let contact_lastName = document.getElementById("lastName").value;
+  let contact_email = document.getElementsById("email").value;
+  let contact_phone = document.getElementByID("phone").value;
 
 }
 
