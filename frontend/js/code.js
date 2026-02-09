@@ -172,6 +172,8 @@ function addContact() {
     email:contact_email
   };
 
+  console.log("user id: ", userId);
+
   let jsonPayload = JSON.stringify(tmp);
 
   let url = urlBase + "/addContact";
@@ -187,7 +189,7 @@ function addContact() {
       console.log("XHR State: ", this.readyState, "Status", this.status);
 
       if(this.readyState == 4 && this.status == 200){
-        
+
         console.log("Response received: ", xhr.responseText);
         let jsonObject = JSON.parse(xhr.responseText);
         console.log("Parsed response:",jsonObject);
