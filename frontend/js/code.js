@@ -229,19 +229,17 @@ function addContactToDashboard(contactInfo){
     "phone: ", contactInfo.phone
   );
 
+  //Update with new contact inforamtion
+  newContact.querySelector("#contact-name").textContent = contactInfo.firstName + " " +  contactInfo.lastName;
+  newContact.querySelector("#contact-email").textContent = contactInfo.email;
+  newContact.querySelector("#contact-phone").textContent = contactInfo.phone;
+
   console.log("Card Info: ", 
     newContact.querySelector("#contact-name").textContent,
     newContact.querySelector("#contact-email").textContent,
     newContact.querySelector("#contact-phone").textContent 
   );
-
-  /*
-  //Update with new contact inforamtion
-  newContact.querySelector("#contact-name").textContent = contactInfo.firstName + " " +  contactInfo.lastName;
-  newContact.querySelector("#contact-email").textContent = contactInfo.email;
-  newContact.querySelector("#contact-phone").textContent = contactInfo.phone;
-*/
-
+  
   //Add contact card to dashboard
   contactContainer.appendChild(newContact);
 
