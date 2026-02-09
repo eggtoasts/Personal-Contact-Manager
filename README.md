@@ -1,5 +1,5 @@
-# 📱 Personal Contact Manager 
-A secure, web-based contact management system built on the LAMP stack. This application allows users to maintain private contact lists with real-time, server-side search capabilities.
+# 📱 Sonic Contact Manager 
+A secure, Sonic-themed contact management system built on the LAMP stack. Our app allows users to maintain personal contact lists with real-time, server-side search capabilities.
 
 # 🚀 Live Demo
 URL: https://sonic-contact-manager.up.railway.app/
@@ -7,13 +7,13 @@ URL: https://sonic-contact-manager.up.railway.app/
 API Documentation: [ ]
 
 # 📌 Key Features
-**Secure Authentication**: User registration and login system to ensure private data access.
+**Login & Registration Authentication**: User and login registration forms to ensure private data access.
 
 **Contact CRUD**: Create, read, update, and delete contacts within a personalized, responsive dashboard.
 
 **Server-Side Search**: Search API supporting partial name matches (no client-side caching).
 
-**Asynchronous UI**: Fully AJAX-enabled web client for a "no-refresh" user experience.
+**Asynchronous UI**: Fully AJAX-enabled web client, a "no refresh" necessary user experience.
 
 **JSON Communication**: All data exchange between the client and the Linux/Apache server is handled via JSON.
 
@@ -39,7 +39,7 @@ The database follows a relational model designed to maintain private contact lis
 
 **Primary Keys**: Both tables contain auto-incrementing integers as primary keys (User ID and Contacts ID), ensuring every record is uniquely identifiable and indexed for retrieval.
 
-**Foreign Key Constraint**: The contacts table includes a User ID Foreign Key, which maps each contact record back to its specific user. This constraint enforces referential integrity; a contact cannot exist without a valid associated user.
+**Foreign Key Constraint**: The contacts table includes a User ID foreign key, which maps each contact record back to its specific user. This constraint enforces referential integrity; a contact cannot exist without a valid associated user.
 
 **One-to-Many Relationship**: This structure allows a single user to manage an unlimited number of private contacts. By filtering queries based on the User ID foreign key, the system prevents "shared contacts" and ensures that the server-side search only returns results relevant to the logged-in session.
 
