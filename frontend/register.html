@@ -27,8 +27,8 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);      
-        width: 80%; 
+        transform: translate(-50%, -50%);
+        width: 80%;
         height: 80%;
         background-image: url("fullbody_sonic.svg");
         background-size: contain;
@@ -94,13 +94,6 @@
         .compact-height {
           max-height: 100vh;
           overflow: visible;
-        }
-      }
-
-      @media (orientation: portrait) and (min-height: 700px) {
-        .portrait-logo {
-          width: 8rem !important;
-          height: 8rem !important;
         }
       }
 
@@ -217,8 +210,9 @@
                   class="text-[#2144A7] text-sm sm:text-base font-medium"
                   >Password</label
                 >
-               <button
-                  type="button" onclick="togglePasswordVisibility()"
+                <button
+                  type="button"
+                  onclick="togglePasswordVisibility()"
                   class="text-slate-500 text-sm sm:text-base hover:text-[#0F172A] transition-colors"
                 >
                   <span id="toggleText">Show</span>
