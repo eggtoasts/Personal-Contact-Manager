@@ -28,8 +28,8 @@
         bottom: 0px;
         left: 20px;
 
-        width: 200px;
-        height: 200px;
+        width: 350px;
+        height: 350px;
         background-image: url("sonicgoat.png");
         background-size: contain;
         background-repeat: no-repeat;
@@ -148,14 +148,13 @@
     class="test min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-4"
   >
     <header
-      class="sonic-header-style fixed top-0 left-0 w-full h-[55px] flex items-center px-4 z-50 shadow-lg border-b border-[#054bb3]/30"
+      class="sonic-header-style fixed top-0 left-0 w-full h-[60px] flex items-center px-4 z-50 shadow-lg border-b border-[#054bb3]/30"
     >
       <img
         src="./sonic_logo.png"
-        class="h-11 object-contain mr-auto"
+        class="h-10 sm:h-11 object-contain mr-auto"
         alt="Sonic Logo"
       />
-
       <button
         onclick="
           event.preventDefault();
@@ -168,21 +167,24 @@
     </header>
 
     <div
-      class="shadow-style bg-white rounded-2xl w-3/4 border border-[#C5D8FE]"
+      class="shadow-style bg-white rounded-2xl w-full max-w-[1100px] border border-[#C5D8FE] flex flex-col"
     >
       <div
-        class="gap-2 flex flex-col md:flex-row shadow-style p-2 header-style flex items-center justify-center rounded-tl-lg rounded-tr-lg"
+        class="shadow-style header-style p-4 sm:p-6 rounded-t-2xl flex flex-col lg:flex-row lg:items-center gap-4"
       >
-        <h1 class="text-white font-bold text-2xl">Contacts</h1>
+        <h1 class="text-white font-bold text-2xl sm:text-3xl">Contacts</h1>
 
-        <div class="flex md:ml-auto">
+        <div
+          class="flex flex-col sm:flex-row gap-3 lg:ml-auto w-full lg:w-auto"
+        >
           <div
-            class="text-sm p-1 rounded-2xl md:ml-auto justify-center items-center flex bg-white mr-2"
+            class="bg-white flex items-center px-3 py-2 rounded-xl flex-grow lg:w-64"
           >
             <svg
+              class="text-slate-400 mr-2"
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
             >
               <path
@@ -192,123 +194,75 @@
             </svg>
             <input
               type="text"
-              placeholder="Enter a contact.."
-              class="focus:outline-none"
+              placeholder="Search contacts..."
+              class="focus:outline-none w-full text-sm"
             />
           </div>
 
           <button
-            class="ml-0 md:ml-5 text-white p-2 bg-[#135BEC] rounded-2xl font-bold text-sm"
+            class="bg-[#135BEC] hover:bg-blue-600 text-white px-5 py-2 rounded-xl font-bold text-sm flex items-center justify-center transition-colors"
           >
-            <p class="flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
-                />
-              </svg>
-              Add Contact
-            </p>
+            <svg
+              class="mr-1"
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+            >
+              <path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
+            </svg>
+            Add Contact
           </button>
         </div>
       </div>
 
       <div
         id="contacts"
-        class="p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
       >
         <div
-          class="flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all"
+          class="flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all group"
         >
           <div
-            class="mr-5 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center"
+            class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center"
           ></div>
-          <div class="">
-            <h3 class="font-bold text-[#0F172A]">First Last</h3>
+          <div class="flex-grow min-w-0">
+            <p class="font-bold text-[#0F172A]">First Last</p>
             <p class="text-sm text-slate-500">yadyada@email.com</p>
             <p class="text-sm text-slate-500">123-123-1233</p>
 
-            <button
-              class="text-slate-400 hover:text-blue-500 transition-opacity"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+            <div class="mt-3 flex gap-2">
+              <button
+                class="text-slate-400 hover:text-blue-500 transition-colors"
               >
-                <path
-                  fill="currentColor"
-                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                />
-              </svg>
-            </button>
-
-            <button
-              class="text-slate-400 hover:text-red-500 transition-opacity"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                  />
+                </svg>
+              </button>
+              <button
+                class="text-slate-400 hover:text-red-500 transition-colors"
               >
-                <path
-                  fill="currentColor"
-                  d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div
-          class="flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all"
-        >
-          <div
-            class="mr-5 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center"
-          ></div>
-          <div class="">
-            <h3 class="font-bold text-[#0F172A]">First Last</h3>
-            <p class="text-sm text-slate-500">yadyada@email.com</p>
-            <p class="text-sm text-slate-500">123-123-1233</p>
-
-            <button
-              class="text-slate-400 hover:text-blue-500 transition-opacity"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                />
-              </svg>
-            </button>
-
-            <button
-              class="text-slate-400 hover:text-red-500 transition-opacity"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
