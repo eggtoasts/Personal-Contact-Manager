@@ -11,7 +11,7 @@
     $phone = $inData["phone"];
     $userId = $inData["userId"];
 
-    $stmt = $pdo->prepare("INSERT INTO contacts_tb (first_name, last_name, email, phone, user_id) VALUES (?, ?, ?, ?, ?)) ");
+    $stmt = $pdo->prepare("INSERT INTO contacts_tb (first_name, last_name, email, phone, user_id) VALUES (?, ?, ?, ?, ?) ");
     $stmt->bind_param("ssssi", $firstName, $lastName, $email, $phone, $userId);
     
     if($stmt->excute()) {
@@ -26,6 +26,7 @@
 
     function sendResultInfoAsJson($obj) {
         header('Content-type: application/json');
+        echo $obj;
     }
 
     function returnWithError($err) {
