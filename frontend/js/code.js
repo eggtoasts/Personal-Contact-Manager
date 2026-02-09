@@ -164,8 +164,17 @@ function addContact() {
 
   let contact_firstName = document.getElementById("firstName").value;
   let contact_lastName = document.getElementById("lastName").value;
-  let contact_email = document.getElementsById("email").value;
+  let contact_email = document.getElementById("email").value;
   let contact_phone = document.getElementByID("phone").value;
+
+  console.log("Contact info: ");
+
+  console.log(
+    " firstname: ", contact_firstName,
+    " lastname: ", contact_lastName,
+    " phone: ", contact_phone,
+    " email: ", contact_email,
+  );
 
 }
 
