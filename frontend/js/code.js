@@ -187,7 +187,19 @@ function addContact() {
       console.log("XHR State: ", this.readyState, "Status", this.status);
 
       if(this.readyState == 4 && this.status == 200){
-        console.log("Contact Added!");
+        
+        console.log("Response received: ", xhr.responseText);
+        let jsonObject = JSON.parse(xhr.responseText);
+        console.log("Parsed response:",jsonObject);
+
+        let isSuccess = jsonObject.success;
+
+        if(isSuccess){
+          console.log("Contact Added!");
+        }else{
+          console.log("Contact Add Unsuccessful");
+        }
+
       }
     };
     xhr.send(jsonPayload);
