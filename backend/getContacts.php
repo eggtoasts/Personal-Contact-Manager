@@ -13,14 +13,14 @@
 
         if($stmt->execute([$userId])) {
             while($row = $stmt->fetch()) {
-                
+
                 if( $contactCount > 0 ){
                     $contactResults .= ",";
                 }
 
                 $contactCount++;
-                $contactResults .= '{"firstName" : "' . $row["firstName"] . '"},
-                                    {"lastName" : "' . $row["lastName"] . '"},
+                $contactResults .= '{"firstName" : "' . $row["first_name"] . '"},
+                                    {"lastName" : "' . $row["last_name"] . '"},
                                     {"email" : "' . $row["email"] . '"},
                                     {"phone" : "' . $row["phone"] . '"},
                                     {"created" : "' . $row["created"] . '"}
@@ -34,8 +34,8 @@
             }
         }
 
-        $stmt->close();
-
+        $stmt = null;
+        
     } catch(PDOException $e){
         returnWithError($e->getMessage());
     }
