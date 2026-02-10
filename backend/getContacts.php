@@ -9,7 +9,7 @@
 
     try{
 
-        $stmt = $pdo->prepare("SELECT first_name, last_name, phone, email, created from contacts_tb WHERE user_id = ?");
+        $stmt = $pdo->prepare("SELECT first_name, last_name, phone, email, created, contacts_id from contacts_tb WHERE user_id = ?");
 
         if($stmt->execute([$userId])) {
             while($row = $stmt->fetch()) {
@@ -19,7 +19,7 @@
                 }
 
                 $contactCount++;
-                $contactResults .= '{"id" : "' . $row["contact_id"] . '",
+                $contactResults .= '{"id" : "' . $row["contacts_id"] . '",
                                     "firstName" : "' . $row["first_name"] . '",
                                     "lastName" : "' . $row["last_name"] . '",
                                     "email" : "' . $row["email"] . '",
