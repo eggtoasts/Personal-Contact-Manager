@@ -19,12 +19,12 @@
                 }
 
                 $contactCount++;
-                $contactResults .= '{"firstName" : "' . $row["first_name"] . '"},
-                                    {"lastName" : "' . $row["last_name"] . '"},
-                                    {"email" : "' . $row["email"] . '"},
-                                    {"phone" : "' . $row["phone"] . '"},
-                                    {"created" : "' . $row["created"] . '"}
-                                    ';
+                $contactResults .= '{"firstName" : "' . $row["first_name"] . '",
+                                    "lastName" : "' . $row["last_name"] . '",
+                                    "email" : "' . $row["email"] . '",
+                                    "phone" : "' . $row["phone"] . '",
+                                    "created" : "' . $row["created"] . '"
+                                    }';
             }
 
             if($contactCount == 0) {
@@ -35,7 +35,7 @@
         }
 
         $stmt = null;
-        
+
     } catch(PDOException $e){
         returnWithError($e->getMessage());
     }
