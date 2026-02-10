@@ -228,6 +228,41 @@ function getContacts() {
   //then, add the contacts we fetch
 }
 
+function getAllContacts(){
+
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  userId = userData.id;
+
+  let tmp = {
+    userId: userId
+  };
+
+  let jsonPayload = JSON.stringify(tmp);
+
+  let url = urlBase + "/getContacts";
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try {
+    xhr.onreadystatechange = function () {
+      console.log("XHR State: ", this.readyState, "Status", this.status);
+
+      if(this.readyState == 4 && this.status == 200) {
+        console.log("Response received: ", xhr.responseText);
+        let jsonObject = JSON.parse(xhr.reponseText);
+        console.log("Parsed response: ", jsonObject);
+
+
+      }
+    };
+    xhr.send(jsonPayload);
+  }catch (err) {
+    console.log("ERROR");
+  }
+}
+
 function saveCookie() {
   let minutes = 20;
   let date = new Date();
