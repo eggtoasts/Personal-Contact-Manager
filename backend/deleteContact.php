@@ -6,7 +6,7 @@
     $inData = getRequestInfo();
     $contactId = $inData["contactId"];
 
-    $stmt = $pdo->prepare("DELETE FROM contacts_tb WHERE contacts_id = ?")
+    $stmt = $pdo->prepare("DELETE FROM contacts_tb WHERE contacts_id = ?");
 
     if($stmt->execute([$contactId])) {
        
