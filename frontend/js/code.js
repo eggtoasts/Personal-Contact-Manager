@@ -505,7 +505,8 @@ function openModal(mode) {
   }
 }
 
-function closeModal() {
+function closeModal(e) {
+  if (e) e.preventDefault();
   const modal = document.getElementById("contactModal");
   modal.classList.add("hidden");
   modal.classList.remove("flex");
