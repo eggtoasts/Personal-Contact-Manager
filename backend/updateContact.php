@@ -12,25 +12,25 @@
     $contactId = $inData["contactId"];
 
     $stmt = $pdo->prepare("UPDATE contacts_tb SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE contacts_id = ?");
-    $stmt->bind_param("ssssi", $firstName, $lastName, $email, $phone, $contactId);
 
-    if($stmt->excute()) {
+    if($stmt->execute([$firstName, $lastName, $email, $phone, $contactId])) {
         returnWithError("");
     } else {
         returnWithError("Contact Update Failed");
     }
 
     function getRequestInfo() {
-        return json_decode(file_get_contents('php//input'), true);
+        return json_decode(file_get_contents('php://input'), true);
     }
 
     function sendResultInfoAsJson($obj) {
         header('Content-type: application/json');
+        echo $obj;
     }
 
     function returnWithError($err) {
         $retValue = json_encode(["error" => $err]);
-        sendResultIndoAsJson($retValue);
+        sendResultInfoAsJson($retValue);
     }
 
     /*UPDATE table_name
