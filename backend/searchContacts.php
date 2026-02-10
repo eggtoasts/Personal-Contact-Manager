@@ -6,39 +6,33 @@
 
     $contactCount = 0;
     $contactResults = "";
+    $userId = $inData["userId"];
 
 
     try{
 
         //prepare statement 
         //requests first, last name, phone and email columns from the database usign partials of the first and last name ONLY from the contacts of the user specified
-        $stmt = $pdo->prepare("SELECT first_name, last_name, phone, email, created from contacts_tb WHERE (first_name like ? OR last_name like ?) AND user_id = ?");
+        $stmt = $pdo->prepare("SELECT contacts_id, first_name, last_name, phone, email, created from contacts_tb WHERE (first_name like ? OR last_name like ?) AND userId = ?");
 		$ContactName = "%" . $inData["search"] . "%"; //partial match 
-        $stmt->bind_param("ssi", $ContactName, $ContactName, $inData["userId"]); //gets the ? values (String, String , integer)
-        $stmt->execute();
+        $stmt->execute([$ContactName, $ContactName, $inData["userId"]]); //gets the ? values (String, String , integer)
 
-        $result = $stmt->get_result();  //gets result of request 
-
-        while($row = $result->fetch_assoc()) {
+        while($row = $stmt->fetch()) {
 
             if( $contactCount > 0 ){
                 $contactResults .= ",";
             }
 
             $contactCount++;
-            // $contactResults .= '{"firstName" : "' . $row["firstName"] . '"},
-            //                     {"lastName" : "' . $row["lastName"] . '"},
-            //                     {"email" : "' . $row["email"] . '"},
-            //                     {"phone" : "' . $row["phone"] . '"},
-            //                     {"created" : "' . $row["created"] . '"}
-            //                     ';
 
             //testing new way of setting ou the resulting Json string
-            $contactResults .= '{"firstName":"' . $row["firstName"] . '",
-                                 "lastName":"' . $row["lastName"] . '",
-                                 "email":"' . $row["email"] . '",
-                                 "phone":"' . $row["phone"] . '",
-                                 "created":"' . $row["created"] . '"}';
+            $contactResults .= '{"id" : "' . $row["contacts_id"] . '",
+                                "firstName" : "' . $row["first_name"] . '",
+                                "lastName" : "' . $row["last_name"] . '",
+                                "email" : "' . $row["email"] . '",
+                                "phone" : "' . $row["phone"] . '",
+                                "created" : "' . $row["created"] . '"
+                                }';
         }
 
     
@@ -49,7 +43,7 @@
             returnWithInfo( $contactResults );
         }
 
-        $stmt->close();
+        $stmt = null;
 
     } catch(PDOException $e){
         returnWithError($e->getMessage());
