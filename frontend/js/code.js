@@ -218,7 +218,10 @@ function editContact(contactId) {
 }
 
 function closeDeleteModal() {
-  contactIdToDelete = -1; // Reset the ID
+  //resets id
+  contactIdToDelete = -1;
+
+  //hides modal
   const modal = document.getElementById("deleteModal");
   modal.classList.add("hidden");
   modal.classList.remove("flex");
@@ -227,12 +230,14 @@ function closeDeleteModal() {
 function showDeleteModal(contactId) {
   contactIdToDelete = contactId;
 
+  //shows modal
   const modal = document.getElementById("deleteModal");
   modal.classList.remove("hidden");
   modal.classList.add("flex");
 }
 
 function confirmDelete() {
+  //only deletes if user pressed "confirmed"
   if (contactIdToDelete !== -1) {
     deleteContact(contactIdToDelete);
     closeDeleteModal();
@@ -502,6 +507,18 @@ function openModal(mode) {
     document.getElementById("lastName").value = "";
     document.getElementById("email").value = "";
     document.getElementById("phone").value = "";
+  }
+
+  if (mode == "edit") {
+    title.innerText = "Edit contact";
+
+    //should have another param that is contactId
+
+    //set to the contact's info
+    // document.getElementById("firstName").value = "";
+    // document.getElementById("lastName").value = "";
+    // document.getElementById("email").value = "";
+    // document.getElementById("phone").value = "";
   }
 }
 
