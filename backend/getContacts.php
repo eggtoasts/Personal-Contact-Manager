@@ -5,34 +5,33 @@
 
     $contactCount = 0;
     $contactResults = "";
+    $userId = $inData["userId"];
 
     try{
 
         $stmt = $pdo->prepare("SELECT first_name, last_name, phone, email, created from contacts_tb WHERE user_id = ?");
-        $stmt->bind_param("s", $inData["userId"]);
-        $stmt->execute();
 
-        $result = $stmt->get_result();
+        if($stmt->execute([$userId])) {
+            while($row = $stmt->fetch()) {
+                
+                if( $contactCount > 0 ){
+                    $contactResults .= ",";
+                }
 
-        while($row = $result->fetch_assoc()) {
-
-            if( $contactCount > 0 ){
-                $contactResults .= ",";
+                $contactCount++;
+                $contactResults .= '{"firstName" : "' . $row["firstName"] . '"},
+                                    {"lastName" : "' . $row["lastName"] . '"},
+                                    {"email" : "' . $row["email"] . '"},
+                                    {"phone" : "' . $row["phone"] . '"},
+                                    {"created" : "' . $row["created"] . '"}
+                                    ';
             }
 
-            $contactCount++;
-            $contactResults .= '{"firstName" : "' . $row["firstName"] . '"},
-                                {"lastName" : "' . $row["lastName"] . '"},
-                                {"email" : "' . $row["email"] . '"},
-                                {"phone" : "' . $row["phone"] . '"},
-                                {"created" : "' . $row["created"] . '"}
-                                ';
-        }
-
-        if($contactCount == 0){
-            returnWithError("No Contacts Found");
-        } else {
-            returnWithInfo( $contactResults );
+            if($contactCount == 0) {
+                returnWithError("No Contacts Found");
+            } else {
+                returnWithInfo( $contactResults );
+            }
         }
 
         $stmt->close();
