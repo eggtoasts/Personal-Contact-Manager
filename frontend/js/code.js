@@ -200,6 +200,7 @@ function addContact(e) {
         //If contact successfully added, add contact to dashboard
         if (isSuccess) {
           console.log("Contact Added!");
+          getAllContacts();
         }
       }
     };
@@ -214,27 +215,65 @@ function editContact() {}
 
 function deleteContact() {}
 
-function getContacts() {
+function displayContacts(contactList) {
   const contactsContainer = document.getElementById("contacts");
 
   //clear container first
-
-  const child = contactId.lastElementChild;
-  while (child) {
-    contactsContainer.removeChild(child);
-    child = child.lastElementChild;
-  }
+  contactsContainer.innerHTML = "";
 
   //then, add the contacts we fetch
+  contactList.forEach((contact) => {
+    const contactCard = document.createElement("div");
+
+    contactCard.className =
+      "flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all group";
+
+    contactCard.innerHTML = `
+      <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
+        ${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}
+      </div>
+      <div class="flex-grow min-w-0">
+        <p class="font-bold text-[#0F172A]">${contact.firstName} ${contact.lastName}</p>
+        
+        <div class="flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+            <path fill="#64748b" d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5-8-5zm0 12H4V8l8 5l8-5z" />
+          </svg>
+          <p class="text-sm text-slate-500 truncate">${contact.email}</p>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+            <path fill="#64748b" d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98" />
+          </svg>
+          <p class="text-sm text-slate-500">${contact.phone}</p>
+        </div>
+
+        <div class="mt-3 flex gap-2">
+          <button class="text-slate-400 hover:text-blue-500 transition-colors" onclick="editContact('${contact.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
+            </svg>
+          </button>
+          <button class="text-slate-400 hover:text-red-500 transition-colors" onclick="deleteContact('${contact.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    contactsContainer.appendChild(contactCard);
+  });
 }
 
-function getAllContacts(){
-
+function getAllContacts() {
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   userId = userData.id;
 
   let tmp = {
-    userId: userId
+    userId: userId,
   };
 
   let jsonPayload = JSON.stringify(tmp);
@@ -242,23 +281,26 @@ function getAllContacts(){
   let url = urlBase + "/getContacts";
 
   let xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
+  xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
   try {
     xhr.onreadystatechange = function () {
       console.log("XHR State: ", this.readyState, "Status", this.status);
 
-      if(this.readyState == 4 && this.status == 200) {
+      if (this.readyState == 4 && this.status == 200) {
         console.log("Response received: ", xhr.responseText);
-        let jsonObject = JSON.parse(xhr.reponseText);
+        let jsonObject = JSON.parse(xhr.responseText);
         console.log("Parsed response: ", jsonObject);
 
-
+        if (jsonObject.results) {
+          //display the contacts in the UI.
+          displayContacts(jsonObject.results);
+        }
       }
     };
     xhr.send(jsonPayload);
-  }catch (err) {
+  } catch (err) {
     console.log("ERROR");
   }
 }
