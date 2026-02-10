@@ -19,7 +19,8 @@
                 }
 
                 $contactCount++;
-                $contactResults .= '{"firstName" : "' . $row["first_name"] . '",
+                $contactResults .= '{"id" : "' . $row["contact_id"] . '",
+                                    "firstName" : "' . $row["first_name"] . '",
                                     "lastName" : "' . $row["last_name"] . '",
                                     "email" : "' . $row["email"] . '",
                                     "phone" : "' . $row["phone"] . '",
