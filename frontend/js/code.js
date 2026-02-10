@@ -200,7 +200,6 @@ function addContact(e) {
         //If contact successfully added, add contact to dashboard
         if (isSuccess) {
           console.log("Contact Added!");
-          addContactToDashboard(tmp);
         }
       }
     };
@@ -209,43 +208,6 @@ function addContact(e) {
     console.log("ERROR");
   }
   closeModal();
-}
-
-function addContactToDashboard(contactInfo) {
-  const contactContainer = document.getElementById("contacts");
-  const contact = document.getElementById("og-contact");
-
-  //Clone contact card and change id so card will appear
-  let newContact = contact.cloneNode(true);
-  newContact.id = "indiv-contact";
-
-  console.log(
-    "Contact Info: ",
-    "first name: ",
-    contactInfo.firstName,
-    "last name: ",
-    contactInfo.lastName,
-    "email: ",
-    contactInfo.email,
-    "phone: ",
-    contactInfo.phone,
-  );
-
-  //Update with new contact inforamtion
-  newContact.querySelector("#contact-name").textContent =
-    contactInfo.firstName + " " + contactInfo.lastName;
-  newContact.querySelector("#contact-email").textContent = contactInfo.email;
-  newContact.querySelector("#contact-phone").textContent = contactInfo.phone;
-
-  console.log(
-    "Card Info: ",
-    newContact.querySelector("#contact-name").textContent,
-    newContact.querySelector("#contact-email").textContent,
-    newContact.querySelector("#contact-phone").textContent,
-  );
-
-  //Add contact card to dashboard
-  contactContainer.appendChild(newContact);
 }
 
 function editContact() {}
