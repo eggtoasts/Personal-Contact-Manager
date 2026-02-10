@@ -6,7 +6,7 @@
 
     $contactCount = 0;
     $contactResults = "";
-    $user_id = $inData["user_id"];
+    $userId = $inData["userId"];
 
 
     try{
@@ -15,7 +15,7 @@
         //requests first, last name, phone and email columns from the database usign partials of the first and last name ONLY from the contacts of the user specified
         $stmt = $pdo->prepare("SELECT contacts_id, first_name, last_name, phone, email, created from contacts_tb WHERE (first_name like ? OR last_name like ?) AND user_id = ?");
 		$ContactName = "%" . $inData["search"] . "%"; //partial match 
-        $stmt->execute([$ContactName, $ContactName, $inData["user_id"]]); //gets the ? values (String, String , integer)
+        $stmt->execute([$ContactName, $ContactName, $inData["userId"]]); //gets the ? values (String, String , integer)
 
         while($row = $stmt->fetch()) {
 
