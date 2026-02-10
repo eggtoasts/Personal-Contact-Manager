@@ -216,7 +216,38 @@ function editContact(contactId) {
 }
 
 function deleteContact(contactId) {
-  return;
+  let tmp = { contactId: contactId };
+
+  let jsonPayload = JSON.stringify(tmp);
+
+  let url = urlBase + "/deleteContact";
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let jsonObject = JSON.parse(xhr.responseText);
+
+        let isSuccess = jsonObject.success;
+
+        //contact has been sucessfully deleted!
+        if (isSuccess) {
+          console.log("Contact deleted successfully");
+
+          //display the contacts in UI.
+          getAllContacts();
+        } else {
+          alert("Error: " + jsonObject.error);
+        }
+      }
+    };
+    xhr.send(jsonPayload);
+  } catch (err) {
+    console.error("ERROR", err.message);
+  }
 }
 
 function displayContacts(contactList) {
