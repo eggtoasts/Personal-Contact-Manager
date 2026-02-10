@@ -157,7 +157,8 @@ function doLogin() {
   }
 }
 
-function addContact() {
+function addContact(e) {
+  if (e) e.preventDefault();
 
   //Get information from contactModal;
   let contact_firstName = document.getElementById("firstName").value;
@@ -166,15 +167,15 @@ function addContact() {
   let contact_phone = document.getElementById("phone").value;
 
   //Get saved userId
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   userId = userData.id;
-  
+
   let tmp = {
-    userId:userId,
-    firstName:contact_firstName,
-    lastName:contact_lastName,
-    phone:contact_phone,
-    email:contact_email
+    userId: userId,
+    firstName: contact_firstName,
+    lastName: contact_lastName,
+    phone: contact_phone,
+    email: contact_email,
   };
 
   let jsonPayload = JSON.stringify(tmp);
@@ -185,36 +186,32 @@ function addContact() {
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-  try
-  {
-    xhr.onreadystatechange = function()
-    {
+  try {
+    xhr.onreadystatechange = function () {
       console.log("XHR State: ", this.readyState, "Status", this.status);
 
-      if(this.readyState == 4 && this.status == 200){
-
+      if (this.readyState == 4 && this.status == 200) {
         console.log("Response received: ", xhr.responseText);
         let jsonObject = JSON.parse(xhr.responseText);
-        console.log("Parsed response:",jsonObject);
+        console.log("Parsed response:", jsonObject);
 
         let isSuccess = jsonObject.success;
 
         //If contact successfully added, add contact to dashboard
-        if(isSuccess){
+        if (isSuccess) {
           console.log("Contact Added!");
           addContactToDashboard(tmp);
         }
-
       }
     };
     xhr.send(jsonPayload);
-  }catch(err){
+  } catch (err) {
     console.log("ERROR");
   }
+  closeModal();
 }
 
-function addContactToDashboard(contactInfo){
-
+function addContactToDashboard(contactInfo) {
   const contactContainer = document.getElementById("contacts");
   const contact = document.getElementById("og-contact");
 
@@ -222,27 +219,33 @@ function addContactToDashboard(contactInfo){
   let newContact = contact.cloneNode(true);
   newContact.id = "indiv-contact";
 
-  console.log("Contact Info: ",
-    "first name: ", contactInfo.firstName,
-    "last name: ", contactInfo.lastName,
-    "email: ", contactInfo.email,
-    "phone: ", contactInfo.phone
+  console.log(
+    "Contact Info: ",
+    "first name: ",
+    contactInfo.firstName,
+    "last name: ",
+    contactInfo.lastName,
+    "email: ",
+    contactInfo.email,
+    "phone: ",
+    contactInfo.phone,
   );
 
   //Update with new contact inforamtion
-  newContact.querySelector("#contact-name").textContent = contactInfo.firstName + " " +  contactInfo.lastName;
+  newContact.querySelector("#contact-name").textContent =
+    contactInfo.firstName + " " + contactInfo.lastName;
   newContact.querySelector("#contact-email").textContent = contactInfo.email;
   newContact.querySelector("#contact-phone").textContent = contactInfo.phone;
 
-  console.log("Card Info: ", 
+  console.log(
+    "Card Info: ",
     newContact.querySelector("#contact-name").textContent,
     newContact.querySelector("#contact-email").textContent,
-    newContact.querySelector("#contact-phone").textContent 
+    newContact.querySelector("#contact-phone").textContent,
   );
-  
+
   //Add contact card to dashboard
   contactContainer.appendChild(newContact);
-
 }
 
 function editContact() {}
