@@ -303,6 +303,8 @@
       </div>
     </div>
 
+    <!-- add contact form -->
+
     <form
       id="contactModal"
       class="fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center p-4"
@@ -410,6 +412,45 @@
         </div>
       </div>
     </form>
+
+    <!-- delete contact confirmation -->
+    <div
+      id="deleteModal"
+      class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center z-50 p-4"
+    >
+      <div
+        class="border border-2 border-[#C5D8FE] bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+      >
+        <div class="p-6 text-center">
+          <div
+            class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4"
+          >
+            <img class="w-9 h-9" src="./sad-sonic.png" />
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Delete Contact</h3>
+          <p class="text-sm text-gray-500">
+            Are you sure you want to delete this contact? This action cannot be
+            undone.
+          </p>
+        </div>
+        <div
+          class="bg-gray-50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 justify-center"
+        >
+          <button
+            onclick="confirmDelete()"
+            class="w-full sm:w-auto px-6 py-2 bg-red-600 text-white font-semibold rounded-lg"
+          >
+            Delete
+          </button>
+          <button
+            onclick="closeDeleteModal()"
+            class="w-full sm:w-auto px-6 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="js/code.js"></script>
 </html>

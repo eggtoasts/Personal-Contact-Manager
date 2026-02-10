@@ -211,8 +211,32 @@ function addContact(e) {
   closeModal();
 }
 
+let contactIdToDelete = -1;
+
 function editContact(contactId) {
   return;
+}
+
+function closeDeleteModal() {
+  contactIdToDelete = -1; // Reset the ID
+  const modal = document.getElementById("deleteModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+function showDeleteModal(contactId) {
+  contactIdToDelete = contactId;
+
+  const modal = document.getElementById("deleteModal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function confirmDelete() {
+  if (contactIdToDelete !== -1) {
+    deleteContact(contactIdToDelete);
+    closeDeleteModal();
+  }
 }
 
 function deleteContact(contactId) {
@@ -292,7 +316,7 @@ function displayContacts(contactList) {
               <path fill="currentColor" d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
             </svg>
           </button>
-          <button class="text-slate-400 hover:text-red-500 transition-colors" onclick="deleteContact('${contact.id}')">
+          <button class="text-slate-400 hover:text-red-500 transition-colors" onclick="showDeleteModal('${contact.id}')">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
               <path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z" />
             </svg>
@@ -473,7 +497,6 @@ function openModal(mode) {
 
   //add a "edit" mode later
   if (mode === "add") {
-    currentContactId = -1;
     title.innerText = "Add Contact";
     document.getElementById("firstName").value = "";
     document.getElementById("lastName").value = "";
