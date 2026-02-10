@@ -211,9 +211,13 @@ function addContact(e) {
   closeModal();
 }
 
-function editContact() {}
+function editContact(contactId) {
+  return;
+}
 
-function deleteContact() {}
+function deleteContact(contactId) {
+  return;
+}
 
 function displayContacts(contactList) {
   const contactsContainer = document.getElementById("contacts");
@@ -227,6 +231,8 @@ function displayContacts(contactList) {
 
     contactCard.className =
       "flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all group";
+
+    contactCard.id = contact.id;
 
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
