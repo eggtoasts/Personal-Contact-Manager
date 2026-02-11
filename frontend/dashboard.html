@@ -211,8 +211,10 @@
             </svg>
             <input
               type="text"
+              id="searchQuery"
               placeholder="Search contacts..."
               class="focus:outline-none w-full text-sm"
+              onkeypress="searchContacts(event)"
             />
           </div>
 

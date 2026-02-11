@@ -334,6 +334,49 @@ function displayContacts(contactList) {
   });
 }
 
+function searchContacts(e) {
+  //only if user presses enter
+  if (e.key === "Enter") {
+    let srch = document.getElementById("searchQuery").value;
+
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    let userId = userData.id;
+
+    //our payload
+    let tmp = {
+      userId: userId,
+      search: srch,
+    };
+
+    let jsonPayload = JSON.stringify(tmp);
+
+    let url = urlBase + "/searchContacts";
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    try {
+      xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          let jsonObject = JSON.parse(xhr.responseText);
+
+          // display our results into UI.
+          if (jsonObject.results) {
+            displayContacts(jsonObject.results);
+          } else {
+            //no reslults, just display empty array.
+            displayContacts([]);
+          }
+        }
+      };
+      xhr.send(jsonPayload);
+    } catch (err) {
+      console.log("ERROR: " + err.message);
+    }
+  }
+}
+
 function getAllContacts() {
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   userId = userData.id;
