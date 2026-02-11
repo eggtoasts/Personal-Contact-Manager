@@ -479,6 +479,9 @@ function getAllContacts() {
           //display the contacts in the UI.
           displayContacts(jsonObject.results);
         }
+        else if (jsonObject.error == "No contacts found"){
+          displayContacts([]);
+        }
       }
     };
     xhr.send(jsonPayload);
