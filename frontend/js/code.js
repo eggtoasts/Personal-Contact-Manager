@@ -233,12 +233,13 @@ function showEditModal(id, firstName, lastName, email, phone) {
 }
 
 function closeEditModal() {
+  if (e) e.preventDefault();
   contactIdToEdit = -1;
 
   //hides modal
   const modal = document.getElementById("editModal");
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
 }
 
 function closeDeleteModal() {
