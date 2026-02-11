@@ -52,18 +52,23 @@
 		echo $obj;
 	}
 
-    function returnWithError( $err )
-	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
-		sendResultInfoAsJson( $retValue );
-	}
-
-    function returnWithInfo( $searchResults )
+     function returnWithInfo( $searchResults )
 	{
 		$retValue = '{"results":[' . $searchResults . '],"error":""}';
 		sendResultInfoAsJson( $retValue );
 	}
+    
+    function returnWithError( $err )
+	{
+		 $retValue = json_encode([
+            "id" => 0,
+            "firstName" => "",
+            "lastName" => "",
+            "error" => $err,
+            "timestamp" => date('Y-m-d H:i:s'),
+            "success" => false,
+        ]);       
 
-
-
+        sendResultInfoAsJson( $retValue );
+	}
 ?>
