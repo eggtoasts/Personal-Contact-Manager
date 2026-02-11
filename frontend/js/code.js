@@ -479,8 +479,17 @@ function getAllContacts() {
           //display the contacts in the UI.
           displayContacts(jsonObject.results);
         }
-        else if (jsonObject.error == "No contacts found"){
-          displayContacts([]);
+        else if (jsonObject.error == "No Contacts Found"){
+          const contactsContainer = document.getElementById("contacts");
+          
+          //Clear Container
+          contactsContainer.innerHTML = "";
+
+          // Display Text when no contacts
+          const text = document.createElement("h1");
+          text.innerHTML = "No Contacts Found";
+          contactsContainer.appendChild(text);
+
         }
       }
     };
