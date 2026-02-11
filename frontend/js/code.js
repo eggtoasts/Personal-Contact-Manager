@@ -257,6 +257,7 @@ function editContact(e) {
         }
       }
     };
+    xhr.send(jsonPayload);
   } catch (err) {
     console.error("ERROR", err.message);
   }
