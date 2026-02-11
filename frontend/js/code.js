@@ -248,7 +248,7 @@ function editContact(e) {
         let jsonObject = JSON.parse(xhr.responseText);
 
         //change this if we finally have a success msg </3
-        if (jsonObject.error === "") {
+        if (jsonObject.success) {
           console.log("Contact updated successfully.");
           closeEditModal();
           getAllContacts();
@@ -639,3 +639,4 @@ window.onclick = function (event) {
     closeModal();
   }
 };
+
