@@ -299,8 +299,21 @@ function displayContacts(contactList) {
         ${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}
       </div>
       <div class="flex-grow min-w-0">
+      <div class ="flex">
         <p class="font-bold text-[#0F172A]">${contact.firstName} ${contact.lastName}</p>
-        
+        <div class="ml-auto flex gap-2">
+          <button class="text-slate-400 hover:text-blue-500 transition-colors" onclick="editContact('${contact.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
+            </svg>
+          </button>
+          <button class="text-slate-400 hover:text-red-500 transition-colors" onclick="showDeleteModal('${contact.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
         <div class="flex items-center gap-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
             <path fill="#64748b" d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5-8-5zm0 12H4V8l8 5l8-5z" />
@@ -315,18 +328,6 @@ function displayContacts(contactList) {
           <p class="text-sm text-slate-500">${contact.phone}</p>
         </div>
 
-        <div class="mt-3 flex gap-2">
-          <button class="text-slate-400 hover:text-blue-500 transition-colors" onclick="editContact('${contact.id}')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
-            </svg>
-          </button>
-          <button class="text-slate-400 hover:text-red-500 transition-colors" onclick="showDeleteModal('${contact.id}')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z" />
-            </svg>
-          </button>
-        </div>
       </div>
     `;
 
