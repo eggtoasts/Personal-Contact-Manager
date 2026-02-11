@@ -232,7 +232,7 @@ function showEditModal(id, firstName, lastName, email, phone) {
   modal.classList.add("flex");
 }
 
-function closeEditModal() {
+function closeEditModal(e) {
   if (e) e.preventDefault();
   contactIdToEdit = -1;
 
