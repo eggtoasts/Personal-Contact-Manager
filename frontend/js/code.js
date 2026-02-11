@@ -235,6 +235,31 @@ function editContact(e) {
   };
 
   //here, we call the api endpoint /updateContact with our payload. the logic is similar to deleteContact.
+  let jsonPayload = JSON.stringify(tmp);
+  let url = urlBase + "/updateContact";
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let jsonObject = JSON.parse(xhr.responseText);
+
+        //change this if we finally have a success msg </3
+        if (jsonObject.error === "") {
+          console.log("Contact updated successfully.");
+          closeEditModal();
+          getAllContacts();
+        } else {
+          alert("Error: " + jsonObject.error);
+        }
+      }
+    };
+  } catch (err) {
+    console.error("ERROR", err.message);
+  }
 }
 
 function showEditModal(id, firstName, lastName, email, phone) {
