@@ -214,7 +214,28 @@ function addContact(e) {
 let contactIdToDelete = -1;
 let contactIdToEdit = -1;
 
-function editContact(e) {}
+function editContact(e) {
+  if (e) e.preventDefault();
+
+  const modal = document.getElementById("editModal");
+
+  //these collects the updated fields from the edit modal
+  let firstName = modal.querySelector("#firstName").value;
+  let lastName = modal.querySelector("#lastName").value;
+  let email = modal.querySelector("#email").value;
+  let phone = modal.querySelector("#phone").value;
+
+  //sets up payload
+  let tmp = {
+    contactId: contactIdToEdit,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    phone: phone,
+  };
+
+  //here, we call the api endpoint /updateContact with our payload. the logic is similar to deleteContact.
+}
 
 function showEditModal(id, firstName, lastName, email, phone) {
   contactIdToEdit = id;
