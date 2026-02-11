@@ -233,6 +233,8 @@ function showEditModal(id, firstName, lastName, email, phone) {
 }
 
 function closeEditModal() {
+  contactIdToEdit = -1;
+
   //hides modal
   const modal = document.getElementById("editModal");
   modal.classList.remove("hidden");
