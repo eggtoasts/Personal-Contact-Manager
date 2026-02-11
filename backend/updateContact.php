@@ -14,9 +14,13 @@
     $stmt = $pdo->prepare("UPDATE contacts_tb SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE contacts_id = ?");
 
     if($stmt->execute([$firstName, $lastName, $email, $phone, $contactId])) {
-        returnWithError("");
+        
+        returnWithInfo();
+    
     } else {
+
         returnWithError("Contact Update Failed");
+        
     }
 
     function getRequestInfo() {
@@ -28,8 +32,26 @@
         echo $obj;
     }
 
+    function returnWithInfo() {
+        $retValue = json_encode([
+            "success" => true,
+            "message" => "Operation completed successfully",
+            "timestamp" => date('Y-m-d H:i:s'),
+        ]);
+
+        sendResultInfoAsJson($retValue);
+    }
+
     function returnWithError($err) {
-        $retValue = json_encode(["error" => $err]);
+        $retValue = json_encode([
+            "id" => 0,
+            "firstName" => "",
+            "lastName" => "",
+            "error" => $err,
+            "timestamp" => date('Y-m-d H:i:s'),
+            "success" => false,
+        ]);
+        
         sendResultInfoAsJson($retValue);
     }
 
