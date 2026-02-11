@@ -212,9 +212,31 @@ function addContact(e) {
 }
 
 let contactIdToDelete = -1;
+let contactIdToEdit = -1;
 
-function editContact(contactId) {
-  return;
+function editContact(e) {}
+
+function showEditModal(id, firstName, lastName, email, phone) {
+  contactIdToEdit = id;
+  const modal = document.getElementById("editModal");
+
+  //fill out fields of the contact
+  modal.querySelector("#firstName").value = firstName;
+  modal.querySelector("#lastName").value = lastName;
+  modal.querySelector("#email").value = email;
+  modal.querySelector("#phone").value = phone;
+  modal.querySelector("#contactId").value = id;
+
+  //show modal
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function closeEditModal() {
+  //hides modal
+  const modal = document.getElementById("editModal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
 }
 
 function closeDeleteModal() {
@@ -302,7 +324,7 @@ function displayContacts(contactList) {
       <div class ="flex">
         <p class="font-bold text-[#0F172A]">${contact.firstName} ${contact.lastName}</p>
         <div class="ml-auto flex gap-2">
-          <button class="text-slate-400 hover:text-blue-500 transition-colors" onclick="editContact('${contact.id}')">
+          <button class="text-slate-400 hover:text-blue-500 transition-colors" onclick="showEditModal('${contact.id}', '${contact.firstName}', '${contact.lastName}', '${contact.email}', '${contact.phone}')">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
               <path fill="currentColor" d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
             </svg>
@@ -544,25 +566,12 @@ function openModal(mode) {
   modal.classList.remove("hidden");
   modal.classList.add("flex");
 
-  //add a "edit" mode later
   if (mode === "add") {
     title.innerText = "Add Contact";
     document.getElementById("firstName").value = "";
     document.getElementById("lastName").value = "";
     document.getElementById("email").value = "";
     document.getElementById("phone").value = "";
-  }
-
-  if (mode == "edit") {
-    title.innerText = "Edit contact";
-
-    //should have another param that is contactId
-
-    //set to the contact's info
-    // document.getElementById("firstName").value = "";
-    // document.getElementById("lastName").value = "";
-    // document.getElementById("email").value = "";
-    // document.getElementById("phone").value = "";
   }
 }
 
