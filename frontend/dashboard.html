@@ -335,6 +335,7 @@
     <!-- add contact form -->
 
     <form
+      onsubmit="addContact(event)"
       id="contactModal"
       class="fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center p-4"
     >
@@ -378,6 +379,7 @@
                 >First Name</label
               >
               <input
+                required
                 type="text"
                 id="firstName"
                 class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -389,6 +391,7 @@
                 >Last Name</label
               >
               <input
+                required
                 type="text"
                 id="lastName"
                 class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -402,6 +405,7 @@
               >Email</label
             >
             <input
+              required
               type="email"
               id="email"
               class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -414,6 +418,8 @@
               >Phone</label
             >
             <input
+              required
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               type="tel"
               id="phone"
               class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -433,7 +439,6 @@
           </button>
           <button
             type="submit"
-            onclick="addContact(event)"
             class="px-6 py-2 bg-[#2144A7] text-white font-medium rounded-lg transition-all"
           >
             Save Contact
@@ -483,6 +488,7 @@
 
     <!-- edit contact form -->
     <form
+      onsubmit="editContact(event)"
       id="editModal"
       class="fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center p-4"
     >
@@ -526,6 +532,7 @@
                 >First Name</label
               >
               <input
+                required
                 type="text"
                 id="firstName"
                 class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -537,6 +544,7 @@
                 >Last Name</label
               >
               <input
+                required
                 type="text"
                 id="lastName"
                 class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -550,6 +558,7 @@
               >Email</label
             >
             <input
+              required
               type="email"
               id="email"
               class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -562,6 +571,8 @@
               >Phone</label
             >
             <input
+              required
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               type="tel"
               id="phone"
               class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -581,7 +592,6 @@
           </button>
           <button
             type="submit"
-            onclick="editContact(event)"
             class="px-6 py-2 bg-[#2144A7] text-white font-medium rounded-lg transition-all"
           >
             Save Contact
