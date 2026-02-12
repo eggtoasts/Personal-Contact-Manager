@@ -220,10 +220,10 @@ function editContact(e) {
   const modal = document.getElementById("editModal");
 
   //these collects the updated fields from the edit modal
-  let firstName = modal.querySelector("#firstName").value;
-  let lastName = modal.querySelector("#lastName").value;
-  let email = modal.querySelector("#email").value;
-  let phone = modal.querySelector("#phone").value;
+  let firstName = modal.querySelector("#editFirstName").value;
+  let lastName = modal.querySelector("#editLastName").value;
+  let email = modal.querySelector("#editEmail").value;
+  let phone = modal.querySelector("#editPhone").value;
 
   //sets up payload
   let tmp = {
@@ -268,11 +268,11 @@ function showEditModal(id, firstName, lastName, email, phone) {
   const modal = document.getElementById("editModal");
 
   //fill out fields of the contact
-  modal.querySelector("#firstName").value = firstName;
-  modal.querySelector("#lastName").value = lastName;
-  modal.querySelector("#email").value = email;
-  modal.querySelector("#phone").value = phone;
-  modal.querySelector("#contactId").value = id;
+  modal.querySelector("#editFirstName").value = firstName;
+  modal.querySelector("#editLastName").value = lastName;
+  modal.querySelector("#editEmail").value = email;
+  modal.querySelector("#editPhone").value = phone;
+  modal.querySelector("#editContactId").value = id;
 
   //show modal
   modal.classList.remove("hidden");

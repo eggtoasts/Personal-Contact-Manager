@@ -354,6 +354,7 @@
             Add Contact
           </h2>
           <button
+            type="button"
             onclick="closeModal(event)"
             class="ml-auto text-gray-400 hover:text-gray-600"
           >
@@ -432,6 +433,7 @@
 
         <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3">
           <button
+            type="button"
             onclick="closeModal(event)"
             class="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
           >
@@ -507,6 +509,7 @@
             Edit Contact
           </h2>
           <button
+            type="button"
             onclick="closeEditModal(event)"
             class="ml-auto text-gray-400 hover:text-gray-600"
           >
@@ -525,7 +528,7 @@
         </div>
 
         <div class="p-6 space-y-4">
-          <input type="hidden" id="contactId" />
+          <input type="hidden" id="editContactId" />
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1"
@@ -534,7 +537,7 @@
               <input
                 required
                 type="text"
-                id="firstName"
+                id="editFirstName"
                 class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="Sonic"
               />
@@ -546,7 +549,7 @@
               <input
                 required
                 type="text"
-                id="lastName"
+                id="editLastName"
                 class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="Hedgehog"
               />
@@ -560,7 +563,7 @@
             <input
               required
               type="email"
-              id="email"
+              id="editEmail"
               class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="sonic@sega.com"
             />
@@ -574,7 +577,7 @@
               required
               pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               type="tel"
-              id="phone"
+              id="editPhone"
               class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="123-456-7890"
             />
@@ -585,6 +588,7 @@
 
         <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3">
           <button
+            type="button"
             onclick="closeEditModal(event)"
             class="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
           >
@@ -594,7 +598,7 @@
             type="submit"
             class="px-6 py-2 bg-[#2144A7] text-white font-medium rounded-lg transition-all"
           >
-            Save Contact
+            Save Changes
           </button>
         </div>
       </div>
