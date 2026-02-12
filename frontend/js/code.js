@@ -478,18 +478,19 @@ function getAllContacts() {
         if (jsonObject.results) {
           //display the contacts in the UI.
           displayContacts(jsonObject.results);
-        }
-        else if (jsonObject.error == "No Contacts Found"){
+        } else if (jsonObject.error == "No Contacts Found") {
           const contactsContainer = document.getElementById("contacts");
-          
+
           //Clear Container
           contactsContainer.innerHTML = "";
 
           // Display Text when no contacts
-          const text = document.createElement("h1");
-          text.innerHTML = "No Contacts Found";
-          contactsContainer.appendChild(text);
-
+          contactsContainer.innerHTML = ` <div
+          class="gap-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center h-fit"
+          >
+          <p class="text-gray-400">No Contacts Found</p>
+          <img class="h-10 opacity-50" src="./sad-sonic.png" alt="Sad Sonic icon" />
+        </div>`;
         }
       }
     };
@@ -651,4 +652,3 @@ window.onclick = function (event) {
     closeModal();
   }
 };
-
