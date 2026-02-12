@@ -362,7 +362,7 @@ function displayContacts(contactList) {
     const contactCard = document.createElement("div");
 
     contactCard.className =
-      "flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all group";
+      "h-fit flex p-4 rounded-2xl border border-[#E4EEFF] bg-[#F8FAFF] hover:border-[#054bb3] transition-all group";
 
     contactCard.id = contact.id;
 
