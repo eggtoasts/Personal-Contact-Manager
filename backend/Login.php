@@ -5,7 +5,8 @@ require_once 'db.php';
 
 header('Content-Type: application/json');
 
-
+//error mesasge to stop any unauthorized request
+//implemented for security
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     $error = [
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             "allowed_methods" => ["POST"]
         ]
     ];
-    logResponse(405, json_encode($error));
+    logResponse(405, json_encode($error)); 
     echo json_encode($error);
     exit();
 }
