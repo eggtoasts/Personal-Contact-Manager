@@ -66,7 +66,7 @@
             "id"=>0,
             "firstName" => "",
             "lastName" => "",
-            "error"=> &err,
+            "error"=> $err,
             "timestamp"=> date('Y-m-d H:i:s'),
             "sucess"=> false,
         ]);
