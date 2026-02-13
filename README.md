@@ -1,5 +1,5 @@
 # 📱 Sonic Contact Manager 
-A secure, Sonic-themed contact management system built on the LAMP stack. Our app allows users to maintain personal contact lists with real-time, server-side search capabilities.
+A secure, Sonic-themed contact manager built on the LAMP stack. Our app allows users to maintain personal contact lists with real-time, server-side search capabilities.
 
 # 🚀 Live Demo
 URL: https://sonic-contact-manager.up.railway.app/
