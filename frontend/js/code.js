@@ -366,12 +366,9 @@ function displayContacts(contactList) {
 
     contactCard.id = contact.id;
 
-    //Capitalize initials for profile
-    contactInitials = contact.firstName.charAt(0).toUpperCase() + "" + contact.lastName.charAt(0).toUpperCase();
-
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
-        ${contactInitials}
+        ${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}
       </div>
       <div class="flex-grow min-w-0">
       <div class ="flex">
