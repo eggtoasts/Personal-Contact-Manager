@@ -63,6 +63,7 @@ function Register() {
         );
       }
     };
+    window.location.href = "./dashboard.html";
     xhr.send(jsonPayload);
   } catch (err) {
     document.getElementById("loginResult").innerHTML = err.message;
@@ -120,7 +121,7 @@ function doLogin() {
               userId,
             );
 
-            // Save user data to localStorage for color.html page
+            // Save user data to localStorage for dashboard.html page
             const userData = {
               id: userId,
               firstName: firstName,
@@ -437,9 +438,9 @@ function searchContacts(e) {
           // display our results into UI.
           if (jsonObject.results) {
             displayContacts(jsonObject.results);
-          } else {
+          } else  {
             //no results, just display no contacts found
-            displayNoContactsFound();;
+            displayNoContactsFound();
           }
         }
       };
