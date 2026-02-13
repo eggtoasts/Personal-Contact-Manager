@@ -62,7 +62,15 @@
 
     function returnWithError( $err )
 	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
+		$retValue = json_encode([
+            "id"=>0,
+            "firstName" => "",
+            "lastName" => "",
+            "error"=> &err,
+            "timestamp"=> date('Y-m-d H:i:s'),
+            "sucess"=> false,
+        ]);
+        
 		sendResultInfoAsJson( $retValue );
 	}
 
