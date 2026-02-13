@@ -51,6 +51,18 @@ function Register() {
             "Registration Complete";
         }
 
+        // Save user data to localStorage for dashboard.html page
+        const userData = {
+          id: userId,
+          firstName: firstName,
+          lastName: lastName,
+          success: jsonObject.success,
+          timestamp: jsonObject.timestamp,
+        };
+        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("loginTime", new Date().toISOString());
+
+
         firstName = jsonObject.firstName;
         lastName = jsonObject.lastName;
         login = jsonObject.login;
