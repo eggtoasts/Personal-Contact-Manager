@@ -22,7 +22,7 @@
              
                  $row = $sql->fetch();
 
-                 returnWithInfo($row["user_id"]);
+                 returnWithInfo($row["user_id"], $row["first_name"], $row["last_name"]);
             }else {
                 returnWithError("From Registration: Cannot Login");
             }
@@ -49,12 +49,12 @@
         echo $obj;
     }
 
-    function returnWithInfo($id)
+    function returnWithInfo($id, $first_name, $last_name)
 	{
 		$retValue = json_encode([
             "id" => $id,
-            "firstName" => $firstName,
-            "lastName" => $lastName,
+            "firstName" => $first_name,
+            "lastName" => $last_name,
             "success" => true,
             "message" => "Operation completed successfully",
             "timestamp" => date('Y-m-d H:i:s'),
