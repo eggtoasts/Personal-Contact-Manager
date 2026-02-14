@@ -8,7 +8,7 @@ let firstName = "";
 let lastName = "";
 
 function Register() {
-  //Get informatin user entered into Register.html
+  //Get information user entered into Register.html
   firstName = document.getElementById("firstName").value;
   lastName = document.getElementById("lastName").value;
   let login = document.getElementById("loginName").value;
@@ -54,28 +54,18 @@ function Register() {
         // Save user data to localStorage for dashboard.html page
         const userData = {
           id: userId,
-          firstName: firstName,
-          lastName: lastName,
+          firstName: jsonObject.firstName,
+          lastName: jsonObject.lastName,
           success: jsonObject.success,
           timestamp: jsonObject.timestamp,
         };
         localStorage.setItem("userData", JSON.stringify(userData));
         localStorage.setItem("loginTime", new Date().toISOString());
 
-
-        firstName = jsonObject.firstName;
-        lastName = jsonObject.lastName;
-        login = jsonObject.login;
-
-        console.log(
-          "Registration successful, user:",
-          firstName,
-          lastName,
-          login,
-        );
+        //Redirect to dashboard after successful registration
+        window.location.href = "./dashboard.html";
       }
     };
-    window.location.href = "./dashboard.html";
     xhr.send(jsonPayload);
   } catch (err) {
     document.getElementById("loginResult").innerHTML = err.message;
@@ -90,12 +80,11 @@ function doLogin() {
 
     let login = document.getElementById("loginName").value;
     let password = document.getElementById("loginPassword").value;
-    //	var hash = md5( password );
 
     document.getElementById("loginResult").innerHTML = "";
 
     let tmp = { login: login, password: password };
-    //	var tmp = {login:login,password:hash};
+
     let jsonPayload = JSON.stringify(tmp);
 
     let url = urlBase + "/Login";
