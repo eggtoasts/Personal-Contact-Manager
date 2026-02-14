@@ -15,8 +15,9 @@
         if ($stmt->execute([$firstName, $lastName, $username, $password])) {
             
             // Get user_id from new user
-            $sql = "SELECT user_id, first_name, last_name FROM user_tb WHERE email = ? AND password = ?";
+            $sql = $pdo->prepare("SELECT user_id, first_name, last_name FROM user_tb WHERE email = ? AND password = ?");
 
+            
             if($sql->execute([$username, $password])) {
              
                  $row = $sql->fetch();
