@@ -50,7 +50,7 @@ The database follows a relational model designed to maintain private contact lis
 # 👥 Team Members & Roles
 **Amy Hakim**: Designed and implemented Tailwind CSS interfaces for registration and login forms to ensure a responsive UI and layout. Developed the PHP backend and MySQL schema using prepared statements for secure user authentication. Authored SwaggerHub documentation to standardize API endpoints and integrated AJAX workflows to enable asynchronous JSON communication between the client and server.
 
-[ ]: []
+**Samantha Amaro**: Project Manager & Frontend Developer. Developed responsive login, registration, and dashboard interfaces using HTML, CSS, and Tailwind CSS. Designed reusable contact components that dynamically render API responses into interactive UI elements. Collaborated on engineering RESTful API integration between frontend (Javascript) and backend (PHP), and its CRUD functionality for contact management.
 
 **Harmony Hamilton**: Helped design database schema. Developed the PHP for user registration as well as add and deletion of contacts using prepared statements to the database. Developed API call functions in Javascript.
 
