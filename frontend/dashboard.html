@@ -18,6 +18,28 @@
 
     <style>
       /* animations */
+      #sonic-logo {
+        transition: 0.5s all ease;
+      }
+
+      #sonic-logo:hover {
+        transform: scale(1.05) rotate(20deg);
+      }
+
+      .sonicSpin {
+        animation: rotateSonic 1s ease-in-out forwards;
+      }
+
+      @keyframes rotateSonic {
+        from {
+          transform: scale(1.05) rotate(20deg);
+        }
+
+        to {
+          transform: scale(1) rotate(360deg);
+        }
+      }
+
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -176,7 +198,7 @@
         class="h-10 sm:h-11 object-contain mr-auto"
         alt="Sonic Logo"
         id="sonic-logo"
-        onclick ="getAllContacts();"
+        onclick="getAllContacts(event)"
       />
       <button
         onclick="

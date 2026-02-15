@@ -1,4 +1,4 @@
-const urlBase = "https://personal-contact-manager-production.up.railway.app"; 
+const urlBase = "https://personal-contact-manager-production.up.railway.app";
 const frontendBase = window.location.origin; // Gets current frontend URL automatically
 
 let userId = 0;
@@ -365,8 +365,11 @@ function displayContacts(contactList) {
 
     contactCard.id = contact.id;
 
-    contactInitials = contact.firstName.charAt(0).toUppercase() + "" + contact.lastName.charAt(0).toUppercase();
-   
+    contactInitials =
+      contact.firstName.charAt(0).toUppercase() +
+      "" +
+      contact.lastName.charAt(0).toUppercase();
+
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
         ${contactInitials}
@@ -438,7 +441,7 @@ function searchContacts(e) {
           // display our results into UI.
           if (jsonObject.results) {
             displayContacts(jsonObject.results);
-          } else  {
+          } else {
             //no results, just display no contacts found
             displayNoContactsFound();
           }
@@ -451,7 +454,19 @@ function searchContacts(e) {
   }
 }
 
-function getAllContacts() {
+const sonicLogo = document.getElementById("sonic-logo");
+
+sonicLogo.addEventListener("animationend", () => {
+  sonicLogo.classList.remove("sonicSpin");
+});
+
+function getAllContacts(e) {
+  if (e) {
+    sonicLogo.classList.remove("sonicSpin");
+    void sonicLogo.offsetWidth;
+    sonicLogo.classList.add("sonicSpin");
+  }
+
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   userId = userData.id;
 
