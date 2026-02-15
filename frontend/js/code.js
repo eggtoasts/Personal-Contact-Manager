@@ -366,9 +366,8 @@ function displayContacts(contactList) {
     contactCard.id = contact.id;
 
     contactInitials =
-      contact.firstName.charAt(0).toUppercase() +
-      "" +
-      contact.lastName.charAt(0).toUppercase();
+      contact.firstName.charAt(0).toUpperCase() +
+      contact.lastName.charAt(0).toUpperCase();
 
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
