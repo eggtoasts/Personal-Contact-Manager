@@ -1,7 +1,5 @@
-// change below when we have a domain set up
-const urlBase = "https://personal-contact-manager-production.up.railway.app"; // Replace with your actual Railway backend URL
+const urlBase = "https://personal-contact-manager-production.up.railway.app"; 
 const frontendBase = window.location.origin; // Gets current frontend URL automatically
-const extension = "";
 
 let userId = 0;
 let firstName = "";
@@ -249,7 +247,6 @@ function editContact(e) {
       if (this.readyState == 4 && this.status == 200) {
         let jsonObject = JSON.parse(xhr.responseText);
 
-        //change this if we finally have a success msg </3
         if (jsonObject.success) {
           console.log("Contact updated successfully.");
           closeEditModal();
@@ -368,9 +365,11 @@ function displayContacts(contactList) {
 
     contactCard.id = contact.id;
 
+    contactInitials = contact.firstName.charAt(0).toUppercase() + "" + contact.lastName.charAt(0).toUppercase();
+   
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
-        ${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}
+        ${contactInitials}
       </div>
       <div class="flex-grow min-w-0">
       <div class ="flex">
