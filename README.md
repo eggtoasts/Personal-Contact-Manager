@@ -54,6 +54,6 @@ The database follows a relational model designed to maintain private contact lis
 
 **Harmony Hamilton**: Helped design database schema. Developed the PHP for user registration as well as add and deletion of contacts using prepared statements to the database. Developed API call functions in Javascript.
 
-[ ]: [ ]
+**Jeremiah Registre**: Created original database structure. Developed the PHP for updating contact information. Documented API behavior using Swagger.
 
 [ ]: [ ]
