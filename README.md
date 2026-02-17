@@ -56,4 +56,6 @@ The database follows a relational model designed to maintain private contact lis
 
 **Jeremiah Registre**: Created original database structure. Developed the PHP for updating contact information. Documented API behavior using Swagger.
 
+**Aileen Seidl**: Developed the search contacts api. Added comments to code for clarity.
+
 [ ]: [ ]
