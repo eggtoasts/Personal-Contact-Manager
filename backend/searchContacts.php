@@ -29,7 +29,7 @@
             $ContactName = "%" . $searchName[0] . "%"; //partial match 
             
             if($partialStmt->execute([$ContactName, $ContactName, $userId])) {
-                countContacts($partialStmt);
+                countContacts($partialStmt, $contactCount, $contactResults);
             } else {
                 returnWithError("Partial Search Error");
             }
@@ -38,7 +38,7 @@
         } else {
 
             if($fullStmt->execute([$searchName[0], $searchName[1], $userId])) {
-                countContacts($fullStmt);
+                countContacts($fullStmt, $contactCount, $contactResults );
             } else {
                 returnWithError("Full Name Search Error");
             }
@@ -51,8 +51,8 @@
         returnWithError($e->getMessage());
     }
 
-    function countContacts($stmt) {
-
+    function countContacts($stmt, $contactCount, $contactResults) 
+    {
         while($row = $stmt->fetch()) {
 
             if( $contactCount > 0 ){
