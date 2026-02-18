@@ -45,7 +45,7 @@
         }
 
         $partialStmt = null;
-        $fullStmt = null
+        $fullStmt = null;
 
     } catch(PDOException $e){
         returnWithError($e->getMessage());
