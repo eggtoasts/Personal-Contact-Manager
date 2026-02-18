@@ -7,15 +7,51 @@
     $contactCount = 0;
     $contactResults = "";
     $userId = $inData["userId"];
-
+    $name = $inData["search"];
 
     try{
 
         //prepare statement 
-        //requests first, last name, phone and email columns from the database usign partials of the first and last name ONLY from the contacts of the user specified
-        $stmt = $pdo->prepare("SELECT contacts_id, first_name, last_name, phone, email, created from contacts_tb WHERE (first_name like ? OR last_name like ?) AND user_id = ?");
-		$ContactName = "%" . $inData["search"] . "%"; //partial match 
-        $stmt->execute([$ContactName, $ContactName, $inData["userId"]]); //gets the ? values (String, String , integer)
+        //requests first, last name, phone and email columns from the database using partials of the first and last name ONLY from the contacts of the user specified
+        $partialStmt = $pdo->prepare("SELECT contacts_id, first_name, last_name, phone, email, created from contacts_tb WHERE (first_name like ? OR last_name like ?) AND user_id = ?");
+        $fullStmt =  $pdo->prepare("SELECT contacts_id, first_name, last_name, phone, email, created from contacts_tb WHERE first_name = ? AND last_name = ? AND user_id = ?");
+
+        //Remove extra whitespace from string
+        $name = preg_replace('/\s+/', ' ', $name);
+        $name = trim($name);
+
+        //Break string into first and last name
+        $searchName = explode(' ', $name, 2);
+
+        //Partial Search
+        if(count($searchName) == 1) {
+
+            $ContactName = "%" . $searchName[0] . "%"; //partial match 
+            
+            if($partialStmt->execute([$ContactName, $ContactName, $userId])) {
+                countContacts($partialStmt);
+            } else {
+                returnWithError("Partial Search Error");
+            }
+
+        //Full name search
+        } else {
+
+            if($fullStmt->execute([$searchName[0], $searchName[1], $userId])) {
+                countContacts($fullStmt);
+            } else {
+                returnWithError("Full Name Search Error");
+            }
+        }
+
+        $partialStmt = null;
+        $fullStmt = null
+
+    } catch(PDOException $e){
+        returnWithError($e->getMessage());
+    }
+
+    function countResults($stmt) {
 
         while($row = $stmt->fetch()) {
 
@@ -44,9 +80,6 @@
         }
 
         $stmt = null;
-
-    } catch(PDOException $e){
-        returnWithError($e->getMessage());
     }
 
     function getRequestInfo() 
