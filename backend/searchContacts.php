@@ -51,7 +51,7 @@
         returnWithError($e->getMessage());
     }
 
-    function countResults($stmt) {
+    function countContacts($stmt) {
 
         while($row = $stmt->fetch()) {
 
