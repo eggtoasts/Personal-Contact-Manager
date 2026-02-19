@@ -1,4 +1,4 @@
-const urlBase = "https://personal-contact-manager-production.up.railway.app";
+const urlBase = "https://personal-contact-manager-production.up.railway.app/API";
 const frontendBase = window.location.origin; // Gets current frontend URL automatically
 
 let userId = 0;
@@ -573,7 +573,7 @@ function displayNoContactsFound() {
   class="gap-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center h-fit"
   >
   <p class="text-gray-400">No Contacts Found</p>
-  <img class="h-10 opacity-50" src="./sad-sonic.png" alt="Sad Sonic icon" />
+  <img class="h-10 opacity-50" src="./images/sad-sonic.png" alt="Sad Sonic icon" />
   </div>`;
 }
 

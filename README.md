@@ -45,7 +45,7 @@ The database follows a relational model designed to maintain private contact lis
 
 **Data Integrity & Security**: Prepared statements are utilized within the PHP backend to interact with these tables. This approach separates the SQL logic from user-provided data, maintaining the structural integrity of the MySQL schema during asynchronous AJAX operations.
 
-![Entity Relationship Diagram](erd.png)
+![Entity Relationship Diagram](frontend/images/erd.png)
 
 # 👥 Team Members & Roles
 **Amy Hakim**: Designed and implemented Tailwind CSS interfaces for registration and login forms to ensure a responsive UI and layout. Developed the PHP backend and MySQL schema using prepared statements for secure user authentication. Authored SwaggerHub documentation to standardize API endpoints and integrated AJAX workflows to enable asynchronous JSON communication between the client and server.

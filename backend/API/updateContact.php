@@ -1,21 +1,26 @@
 <?php
-    //Delete contact from contact table
 
-    require_once 'db.php';
-    
+    //Update Contacts in the Contacts table
+
+    require_once '../db.php';
     $inData = getRequestInfo();
+
+    $firstName = $inData["firstName"];
+    $lastName = $inData["lastName"];
+    $email = $inData["email"];
+    $phone = $inData["phone"];
     $contactId = $inData["contactId"];
 
-    $stmt = $pdo->prepare("DELETE FROM contacts_tb WHERE contacts_id = ?");
+    $stmt = $pdo->prepare("UPDATE contacts_tb SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE contacts_id = ?");
 
-    if($stmt->execute([$contactId])) {
-       
+    if($stmt->execute([$firstName, $lastName, $email, $phone, $contactId])) {
+        
         returnWithInfo();
-
+    
     } else {
 
-        returnWithError("Delete Contact Failed");
-
+        returnWithError("Contact Update Failed");
+        
     }
 
     function getRequestInfo() {
@@ -45,8 +50,12 @@
             "error" => $err,
             "timestamp" => date('Y-m-d H:i:s'),
             "success" => false,
-        ]);       
+        ]);
         
         sendResultInfoAsJson($retValue);
     }
+
+    /*UPDATE table_name
+    SET column1 = value1, column2 = value2, ...
+    WHERE condition;   */
 ?>
