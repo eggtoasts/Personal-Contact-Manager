@@ -369,7 +369,14 @@ function displayContacts(contactList) {
       contact.firstName.charAt(0).toUpperCase() +
       contact.lastName.charAt(0).toUpperCase();
 
-    const dateOnly = contact.created ? contact.created.split(" ")[0] : "N/A";
+    const dateOnly = contact.created
+      ? new Date(contact.created.replace(/-/g, "/")).toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "N/A";
 
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
