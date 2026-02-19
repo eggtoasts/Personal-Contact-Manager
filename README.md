@@ -58,4 +58,3 @@ The database follows a relational model designed to maintain private contact lis
 
 **Aileen Seidl**: Developed the search contacts api. Added comments to code for clarity.
 
-[ ]: [ ]
