@@ -412,7 +412,7 @@ function displayContacts(contactList) {
           <p class="text-sm text-slate-500">${contact.phone}</p>
         </div>
 
-        <p class="w-fit ml-auto text-xs text-slate-400">${dateOnly}</p>
+        <p class="w-fit ml-auto text-xs text-slate-400">Created on: ${dateOnly}</p>
 
       </div>
     `;
