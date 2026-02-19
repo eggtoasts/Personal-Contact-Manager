@@ -369,6 +369,8 @@ function displayContacts(contactList) {
       contact.firstName.charAt(0).toUpperCase() +
       contact.lastName.charAt(0).toUpperCase();
 
+    const dateOnly = contact.created ? contact.created.split(" ")[0] : "N/A";
+
     contactCard.innerHTML = `
       <div class="shrink-0 mr-4 w-12 h-12 rounded-full bg-[#054bb3] flex items-center justify-center text-white font-bold">
         ${contactInitials}
@@ -402,6 +404,8 @@ function displayContacts(contactList) {
           </svg>
           <p class="text-sm text-slate-500">${contact.phone}</p>
         </div>
+
+        <p class="w-fit ml-auto text-xs text-slate-400">${dateOnly}</p>
 
       </div>
     `;
