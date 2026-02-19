@@ -1,26 +1,26 @@
 <?php
 
-    //Add Contacts into the Contacts table
-   
-    require_once '../db.php';
+    //Update Contacts in the Contacts table
+
+    require_once 'db.php';
     $inData = getRequestInfo();
 
     $firstName = $inData["firstName"];
     $lastName = $inData["lastName"];
     $email = $inData["email"];
     $phone = $inData["phone"];
-    $userId = $inData["userId"];
+    $contactId = $inData["contactId"];
 
-    $stmt = $pdo->prepare("INSERT INTO contacts_tb (first_name, last_name, email, phone, user_id) VALUES (?, ?, ?, ?, ?) ");
-    
-    if($stmt->execute([$firstName, $lastName, $email, $phone, $userId])) {
+    $stmt = $pdo->prepare("UPDATE contacts_tb SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE contacts_id = ?");
+
+    if($stmt->execute([$firstName, $lastName, $email, $phone, $contactId])) {
         
         returnWithInfo();
     
     } else {
-    
-        returnWithError("Add Contact Failed");
 
+        returnWithError("Contact Update Failed");
+        
     }
 
     function getRequestInfo() {
@@ -32,15 +32,13 @@
         echo $obj;
     }
 
-    function returnWithInfo()
-    {
-
+    function returnWithInfo() {
         $retValue = json_encode([
-        "success" => true,
-        "message" => "Operation completed successfully",
-        "timestamp" => date('Y-m-d H:i:s'),
+            "success" => true,
+            "message" => "Operation completed successfully",
+            "timestamp" => date('Y-m-d H:i:s'),
         ]);
-        
+
         sendResultInfoAsJson($retValue);
     }
 
@@ -51,8 +49,13 @@
             "lastName" => "",
             "error" => $err,
             "timestamp" => date('Y-m-d H:i:s'),
-            "success" => false
+            "success" => false,
         ]);
+        
         sendResultInfoAsJson($retValue);
     }
+
+    /*UPDATE table_name
+    SET column1 = value1, column2 = value2, ...
+    WHERE condition;   */
 ?>

@@ -1,4 +1,4 @@
-const urlBase = "https://personal-contact-manager-production.up.railway.app/API";
+const urlBase = "https://personal-contact-manager-production.up.railway.app";
 const frontendBase = window.location.origin; // Gets current frontend URL automatically
 
 let userId = 0;

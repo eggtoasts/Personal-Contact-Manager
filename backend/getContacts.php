@@ -1,6 +1,6 @@
 <?php
 
-    require_once '../db.php';
+    require_once 'db.php';
     $inData = getRequestInfo();
 
     $contactCount = 0;
